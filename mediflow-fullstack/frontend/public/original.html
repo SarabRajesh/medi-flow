@@ -1,0 +1,2140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MediFlow — Smart Hospital Management</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f0f4f8;
+  --surface: #ffffff;
+  --surface2: #e8eef5;
+  --border: #d1dce8;
+  --text: #0d1b2a;
+  --text2: #4a6080;
+  --text3: #8ba0b8;
+  --accent: #0066ff;
+  --accent2: #00c5a3;
+  --accent3: #ff5c5c;
+  --accent4: #f59e0b;
+  --admin-color: #7c3aed;
+  --doctor-color: #0066ff;
+  --patient-color: #00c5a3;
+  --shadow: 0 2px 16px rgba(0,0,0,0.08);
+  --shadow-lg: 0 8px 40px rgba(0,0,0,0.12);
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 14px;
+}
+
+h1,h2,h3,h4,h5 { font-family: 'Syne', sans-serif; }
+
+/* ===== LANDING ===== */
+#landing {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0d1b2a 0%, #1a3050 50%, #0d2040 100%);
+  position: relative;
+  overflow: hidden;
+  padding: 40px 20px;
+}
+#landing::before {
+  content:'';
+  position:absolute;
+  width:600px;height:600px;
+  background: radial-gradient(circle, rgba(0,102,255,0.15) 0%, transparent 70%);
+  top:-100px;right:-100px;pointer-events:none;
+}
+#landing::after {
+  content:'';
+  position:absolute;
+  width:400px;height:400px;
+  background: radial-gradient(circle, rgba(0,197,163,0.12) 0%, transparent 70%);
+  bottom:-50px;left:-50px;pointer-events:none;
+}
+.landing-logo { 
+  font-family:'Syne',sans-serif; 
+  font-size:52px; 
+  font-weight:800;
+  color:#fff;
+  letter-spacing:-2px;
+  margin-bottom:8px;
+  position:relative;z-index:1;
+}
+.landing-logo span { color:#00c5a3; }
+.landing-sub { 
+  color:rgba(255,255,255,0.55); 
+  font-size:16px;
+  margin-bottom:60px;
+  position:relative;z-index:1;
+  font-weight:300;
+  letter-spacing:0.5px;
+}
+.role-cards { 
+  display:flex; 
+  gap:24px; 
+  position:relative;z-index:1;
+  flex-wrap:wrap;
+  justify-content:center;
+}
+.role-card {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  padding: 40px 32px;
+  width: 220px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.role-card::before {
+  content:'';
+  position:absolute;
+  inset:0;
+  background: linear-gradient(135deg, var(--rc, rgba(255,255,255,0.05)), transparent);
+  opacity:0;
+  transition:opacity 0.3s;
+}
+.role-card:hover { transform:translateY(-8px) scale(1.02); }
+.role-card:hover::before { opacity:1; }
+.role-card.admin-card { --rc: rgba(124,58,237,0.2); }
+.role-card.doctor-card { --rc: rgba(0,102,255,0.2); }
+.role-card.patient-card { --rc: rgba(0,197,163,0.2); }
+.role-icon {
+  width:72px;height:72px;
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 20px;
+  font-size:30px;
+}
+.admin-card .role-icon { background:rgba(124,58,237,0.2); }
+.doctor-card .role-icon { background:rgba(0,102,255,0.2); }
+.patient-card .role-icon { background:rgba(0,197,163,0.2); }
+.role-title { 
+  font-family:'Syne',sans-serif; 
+  font-size:20px; 
+  font-weight:700;
+  color:#fff;
+  margin-bottom:8px;
+}
+.role-desc { color:rgba(255,255,255,0.5); font-size:12px; line-height:1.5; }
+.role-btn {
+  display:inline-block;
+  margin-top:20px;
+  padding:10px 24px;
+  border-radius:100px;
+  font-family:'Syne',sans-serif;
+  font-size:13px;
+  font-weight:600;
+  border:none;cursor:pointer;
+  transition:all 0.2s;
+  color:#fff;
+}
+.admin-card .role-btn { background: #7c3aed; }
+.doctor-card .role-btn { background: #0066ff; }
+.patient-card .role-btn { background: #00c5a3; }
+.role-btn:hover { opacity:0.85; transform:scale(0.97); }
+
+/* ===== APP WRAPPER ===== */
+.app { display:none; flex-direction:column; min-height:100vh; }
+.app.active { display:flex; }
+
+/* ===== TOPBAR ===== */
+.topbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 28px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 1px 0 var(--border);
+}
+.topbar-left { display:flex; align-items:center; gap:16px; }
+.app-logo { font-family:'Syne',sans-serif; font-size:22px; font-weight:800; color:var(--text); }
+.app-logo span { color:var(--theme-color, #0066ff); }
+.role-badge {
+  padding:4px 12px;
+  border-radius:100px;
+  font-size:11px;
+  font-weight:600;
+  font-family:'Syne',sans-serif;
+  letter-spacing:0.5px;
+  text-transform:uppercase;
+}
+.topbar-right { display:flex; align-items:center; gap:12px; }
+.notif-btn {
+  width:38px;height:38px;
+  border-radius:50%;
+  border:1px solid var(--border);
+  background:transparent;
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;
+  position:relative;
+  transition:background 0.2s;
+}
+.notif-btn:hover { background:var(--surface2); }
+.notif-dot {
+  position:absolute;top:6px;right:6px;
+  width:8px;height:8px;
+  border-radius:50%;
+  background:#ff5c5c;
+  border:2px solid #fff;
+}
+.user-pill {
+  display:flex;align-items:center;gap:10px;
+  padding:6px 14px 6px 8px;
+  border-radius:100px;
+  border:1px solid var(--border);
+  cursor:pointer;
+  transition:background 0.2s;
+}
+.user-pill:hover { background:var(--surface2); }
+.user-avatar {
+  width:30px;height:30px;
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;
+  font-weight:700;
+  color:#fff;
+}
+.user-name { font-size:13px; font-weight:500; }
+.back-btn {
+  padding:8px 18px;
+  border-radius:100px;
+  border:1px solid var(--border);
+  background:transparent;
+  font-family:'DM Sans',sans-serif;
+  font-size:13px;
+  cursor:pointer;
+  transition:all 0.2s;
+}
+.back-btn:hover { background:var(--surface2); }
+
+/* ===== LAYOUT ===== */
+.main-layout { display:flex; flex:1; }
+.sidebar {
+  width:240px;
+  background:var(--surface);
+  border-right:1px solid var(--border);
+  padding:24px 16px;
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  position:sticky;
+  top:64px;
+  height:calc(100vh - 64px);
+  overflow-y:auto;
+}
+.nav-section { 
+  font-size:10px; 
+  font-weight:700; 
+  letter-spacing:1.2px; 
+  text-transform:uppercase; 
+  color:var(--text3); 
+  padding:12px 12px 6px;
+  margin-top:8px;
+}
+.nav-item {
+  display:flex;align-items:center;gap:12px;
+  padding:10px 12px;
+  border-radius:10px;
+  cursor:pointer;
+  transition:all 0.15s;
+  color:var(--text2);
+  font-size:13.5px;
+  font-weight:500;
+  position:relative;
+}
+.nav-item:hover { background:var(--surface2); color:var(--text); }
+.nav-item.active { 
+  background:var(--theme-bg, rgba(0,102,255,0.08)); 
+  color:var(--theme-color, #0066ff);
+  font-weight:600;
+}
+.nav-item.active::before {
+  content:'';
+  position:absolute;left:-16px;top:50%;transform:translateY(-50%);
+  width:3px;height:22px;
+  background:var(--theme-color, #0066ff);
+  border-radius:0 3px 3px 0;
+}
+.nav-icon { font-size:17px; width:20px; text-align:center; }
+.nav-badge {
+  margin-left:auto;
+  background:var(--accent3);
+  color:#fff;
+  font-size:10px;
+  font-weight:700;
+  padding:2px 7px;
+  border-radius:100px;
+}
+
+/* ===== CONTENT ===== */
+.content { flex:1; padding:28px; overflow-y:auto; }
+.page { display:none; }
+.page.active { display:block; }
+
+/* ===== COMPONENTS ===== */
+.page-header { margin-bottom:28px; }
+.page-header h2 { font-size:26px; font-weight:700; color:var(--text); margin-bottom:4px; }
+.page-header p { color:var(--text2); font-size:14px; }
+
+.stats-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:16px; margin-bottom:28px; }
+.stat-card {
+  background:var(--surface);
+  border-radius:var(--radius);
+  padding:22px;
+  border:1px solid var(--border);
+  position:relative;
+  overflow:hidden;
+  transition:transform 0.2s, box-shadow 0.2s;
+}
+.stat-card:hover { transform:translateY(-2px); box-shadow:var(--shadow-lg); }
+.stat-card::after {
+  content:'';
+  position:absolute;
+  top:0;right:0;
+  width:80px;height:80px;
+  background:radial-gradient(circle, var(--sc, rgba(0,102,255,0.08)), transparent);
+  border-radius:50%;
+  transform:translate(20px,-20px);
+}
+.stat-icon { font-size:22px; margin-bottom:12px; }
+.stat-label { font-size:11px; text-transform:uppercase; letter-spacing:0.8px; color:var(--text3); font-weight:600; margin-bottom:4px; }
+.stat-value { font-family:'Syne',sans-serif; font-size:28px; font-weight:800; color:var(--text); }
+.stat-delta { font-size:12px; margin-top:4px; }
+.delta-up { color:#00c5a3; } .delta-down { color:#ff5c5c; }
+
+.grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+.grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:20px; }
+
+.card {
+  background:var(--surface);
+  border-radius:var(--radius);
+  border:1px solid var(--border);
+  overflow:hidden;
+}
+.card-header {
+  padding:18px 22px;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.card-title { font-family:'Syne',sans-serif; font-size:15px; font-weight:700; }
+.card-body { padding:22px; }
+.card-action { 
+  font-size:12px; 
+  color:var(--theme-color,#0066ff); 
+  cursor:pointer; 
+  font-weight:600;
+  background:none;border:none;
+}
+.card-action:hover { text-decoration:underline; }
+
+/* TABLE */
+.table-wrap { overflow-x:auto; }
+table { width:100%; border-collapse:collapse; }
+th { 
+  text-align:left; 
+  padding:12px 16px; 
+  font-size:11px; 
+  font-weight:700; 
+  text-transform:uppercase; 
+  letter-spacing:0.8px;
+  color:var(--text3);
+  background:var(--surface2);
+  border-bottom:1px solid var(--border);
+}
+td { 
+  padding:14px 16px; 
+  border-bottom:1px solid var(--border); 
+  font-size:13px;
+  color:var(--text);
+}
+tr:last-child td { border-bottom:none; }
+tr:hover td { background:rgba(0,0,0,0.015); }
+
+/* BADGE */
+.badge {
+  display:inline-flex;align-items:center;gap:5px;
+  padding:4px 10px;
+  border-radius:100px;
+  font-size:11px;
+  font-weight:600;
+}
+.badge-green { background:#d1fae5; color:#065f46; }
+.badge-blue { background:#dbeafe; color:#1e40af; }
+.badge-yellow { background:#fef3c7; color:#92400e; }
+.badge-red { background:#fee2e2; color:#991b1b; }
+.badge-purple { background:#ede9fe; color:#5b21b6; }
+.badge-gray { background:#f1f5f9; color:#475569; }
+
+/* FORM */
+.form-group { margin-bottom:18px; }
+.form-label { 
+  display:block; 
+  font-size:12px; 
+  font-weight:600; 
+  color:var(--text2); 
+  margin-bottom:6px;
+  text-transform:uppercase;
+  letter-spacing:0.5px;
+}
+.form-input, .form-select, .form-textarea {
+  width:100%;
+  padding:10px 14px;
+  border:1.5px solid var(--border);
+  border-radius:var(--radius-sm);
+  font-family:'DM Sans',sans-serif;
+  font-size:14px;
+  background:var(--surface);
+  color:var(--text);
+  transition:border-color 0.2s;
+  outline:none;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus { border-color:var(--theme-color,#0066ff); }
+.form-textarea { resize:vertical; min-height:80px; }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+
+/* BUTTON */
+.btn {
+  display:inline-flex;align-items:center;gap:8px;
+  padding:10px 22px;
+  border-radius:100px;
+  font-family:'Syne',sans-serif;
+  font-size:13px;
+  font-weight:600;
+  border:none;cursor:pointer;
+  transition:all 0.2s;
+}
+.btn-primary { background:var(--theme-color,#0066ff); color:#fff; }
+.btn-primary:hover { opacity:0.88; transform:scale(0.98); }
+.btn-secondary { background:var(--surface2); color:var(--text); border:1px solid var(--border); }
+.btn-secondary:hover { background:var(--border); }
+.btn-danger { background:#ff5c5c; color:#fff; }
+.btn-danger:hover { opacity:0.88; }
+.btn-success { background:#00c5a3; color:#fff; }
+.btn-sm { padding:7px 16px; font-size:12px; }
+.btn-icon { padding:8px; border-radius:50%; width:36px;height:36px; justify-content:center; }
+
+/* AVATAR */
+.avatar {
+  width:36px;height:36px;
+  border-radius:50%;
+  background:var(--surface2);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:13px;
+  flex-shrink:0;
+}
+
+/* TIMELINE */
+.timeline { list-style:none; position:relative; padding-left:24px; }
+.timeline::before { 
+  content:''; 
+  position:absolute; 
+  left:7px;top:0;bottom:0; 
+  width:2px; 
+  background:var(--border);
+}
+.timeline-item { 
+  position:relative; 
+  padding-bottom:24px; 
+  padding-left:16px;
+}
+.timeline-item::before {
+  content:'';
+  position:absolute;left:-20px;top:4px;
+  width:10px;height:10px;
+  border-radius:50%;
+  background:var(--theme-color,#0066ff);
+  border:2px solid #fff;
+  box-shadow:0 0 0 2px var(--theme-color,#0066ff);
+}
+.timeline-date { font-size:11px; color:var(--text3); margin-bottom:3px; }
+.timeline-title { font-weight:600; font-size:13px; margin-bottom:2px; }
+.timeline-body { font-size:12px; color:var(--text2); }
+
+/* APPOINTMENT SLOT */
+.slot-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(80px,1fr)); gap:8px; margin-top:12px; }
+.slot {
+  padding:8px;
+  border-radius:8px;
+  text-align:center;
+  font-size:12px;
+  font-weight:600;
+  border:1.5px solid var(--border);
+  cursor:pointer;
+  transition:all 0.15s;
+}
+.slot:hover { border-color:var(--theme-color,#0066ff); color:var(--theme-color,#0066ff); background:rgba(0,102,255,0.04); }
+.slot.selected { background:var(--theme-color,#0066ff); color:#fff; border-color:var(--theme-color,#0066ff); }
+.slot.taken { background:var(--surface2); color:var(--text3); cursor:not-allowed; pointer-events:none; }
+
+/* VITALS */
+.vitals-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(120px,1fr)); gap:12px; }
+.vital-card {
+  background:var(--surface2);
+  border-radius:12px;
+  padding:16px;
+  text-align:center;
+}
+.vital-value { font-family:'Syne',sans-serif; font-size:22px; font-weight:800; color:var(--text); }
+.vital-unit { font-size:11px; color:var(--text3); }
+.vital-label { font-size:11px; color:var(--text2); margin-top:4px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px; }
+
+/* CHAT */
+.chat-box { 
+  height:320px; 
+  overflow-y:auto; 
+  padding:16px;
+  background:var(--surface2);
+  border-radius:12px;
+  margin-bottom:12px;
+  display:flex;flex-direction:column;gap:12px;
+}
+.msg { max-width:75%; }
+.msg-self { align-self:flex-end; }
+.msg-bubble {
+  padding:10px 14px;
+  border-radius:16px;
+  font-size:13px;
+  line-height:1.5;
+}
+.msg-self .msg-bubble { background:var(--theme-color,#0066ff); color:#fff; border-radius:16px 16px 4px 16px; }
+.msg-other .msg-bubble { background:var(--surface); border:1px solid var(--border); border-radius:16px 16px 16px 4px; }
+.msg-meta { font-size:10px; color:var(--text3); margin-top:4px; }
+.msg-self .msg-meta { text-align:right; }
+.chat-input-row { display:flex;gap:10px; }
+.chat-input { flex:1; }
+
+/* PROGRESS BAR */
+.progress-bar { height:6px; background:var(--border); border-radius:100px; overflow:hidden; }
+.progress-fill { height:100%; border-radius:100px; background:var(--theme-color,#0066ff); transition:width 0.5s; }
+
+/* TABS */
+.tabs { display:flex; gap:4px; border-bottom:2px solid var(--border); margin-bottom:24px; }
+.tab {
+  padding:10px 18px;
+  font-size:13px;font-weight:600;
+  cursor:pointer;
+  border-bottom:2px solid transparent;
+  margin-bottom:-2px;
+  transition:all 0.15s;
+  color:var(--text2);
+}
+.tab:hover { color:var(--text); }
+.tab.active { color:var(--theme-color,#0066ff); border-bottom-color:var(--theme-color,#0066ff); }
+
+/* MODAL OVERLAY */
+.modal-overlay {
+  position:fixed;inset:0;
+  background:rgba(0,0,0,0.4);
+  backdrop-filter:blur(4px);
+  z-index:1000;
+  display:none;
+  align-items:center;justify-content:center;
+  padding:20px;
+}
+.modal-overlay.open { display:flex; }
+.modal {
+  background:var(--surface);
+  border-radius:24px;
+  width:100%;max-width:520px;
+  box-shadow:var(--shadow-lg);
+  overflow:hidden;
+  animation:slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes slideUp { from{transform:translateY(20px);opacity:0} to{transform:none;opacity:1} }
+.modal-header {
+  padding:22px 24px;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.modal-title { font-family:'Syne',sans-serif; font-size:17px; font-weight:700; }
+.modal-close { background:none;border:none;cursor:pointer;font-size:20px;color:var(--text2);padding:4px;border-radius:6px; }
+.modal-close:hover { background:var(--surface2); }
+.modal-body { padding:24px; }
+.modal-footer { padding:16px 24px; border-top:1px solid var(--border); display:flex;justify-content:flex-end;gap:10px; }
+
+/* ALERT */
+.alert {
+  padding:12px 16px;
+  border-radius:10px;
+  font-size:13px;
+  display:flex;align-items:center;gap:10px;
+  margin-bottom:16px;
+}
+.alert-info { background:#dbeafe; color:#1e40af; }
+.alert-success { background:#d1fae5; color:#065f46; }
+.alert-warning { background:#fef3c7; color:#92400e; }
+.alert-danger { background:#fee2e2; color:#991b1b; }
+
+/* SEARCH BAR */
+.search-bar {
+  display:flex;align-items:center;gap:10px;
+  padding:0 14px;
+  border:1.5px solid var(--border);
+  border-radius:100px;
+  background:var(--surface);
+  width:280px;
+}
+.search-bar input {
+  border:none;outline:none;
+  font-family:'DM Sans',sans-serif;
+  font-size:13px;
+  background:transparent;
+  padding:10px 0;
+  flex:1;
+  color:var(--text);
+}
+.search-icon { color:var(--text3); font-size:15px; }
+
+/* PRESCRIPTION */
+.rx-card {
+  border:1.5px solid var(--border);
+  border-radius:14px;
+  padding:20px;
+  margin-bottom:14px;
+}
+.rx-header { display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px; }
+.rx-title { font-family:'Syne',sans-serif; font-size:14px; font-weight:700; }
+.med-list { list-style:none; }
+.med-item { 
+  display:flex;align-items:center;gap:12px;
+  padding:10px 0;
+  border-bottom:1px dashed var(--border);
+  font-size:13px;
+}
+.med-item:last-child { border-bottom:none; }
+.med-dot { width:8px;height:8px;border-radius:50%;background:var(--theme-color,#0066ff);flex-shrink:0; }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width:5px;height:5px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb { background:var(--border); border-radius:100px; }
+
+/* ANIMATIONS */
+@keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+.page.active { animation:fadeIn 0.3s ease; }
+
+/* THEME VARS */
+.app-admin { --theme-color: #7c3aed; --theme-bg: rgba(124,58,237,0.08); }
+.app-doctor { --theme-color: #0066ff; --theme-bg: rgba(0,102,255,0.08); }
+.app-patient { --theme-color: #00c5a3; --theme-bg: rgba(0,197,163,0.08); }
+
+/* Emergency strip */
+.emergency-strip {
+  background: linear-gradient(90deg, #ff4444, #ff6b6b);
+  color:#fff;
+  padding:10px 20px;
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:13px;
+  font-weight:600;
+  animation:pulseStrip 2s infinite;
+}
+@keyframes pulseStrip { 0%,100%{opacity:1} 50%{opacity:0.85} }
+.emergency-strip button {
+  background:rgba(255,255,255,0.25);
+  border:1px solid rgba(255,255,255,0.4);
+  color:#fff;
+  padding:6px 16px;
+  border-radius:100px;
+  font-family:'Syne',sans-serif;
+  font-size:12px;
+  font-weight:700;
+  cursor:pointer;
+}
+
+/* CHART BARS */
+.bar-chart { display:flex; align-items:flex-end; gap:10px; height:140px; padding:0 4px; }
+.bar-wrap { flex:1; display:flex;flex-direction:column;align-items:center;gap:6px; }
+.bar { 
+  width:100%; 
+  border-radius:8px 8px 0 0; 
+  background:var(--theme-color,#0066ff);
+  opacity:0.7;
+  transition:opacity 0.2s;
+  min-height:4px;
+}
+.bar:hover { opacity:1; }
+.bar-label { font-size:10px; color:var(--text3); font-weight:600; }
+
+/* DONUT CHART */
+.donut-wrap { position:relative; width:120px;height:120px; margin:0 auto; }
+.donut-wrap svg { transform:rotate(-90deg); }
+.donut-center { 
+  position:absolute;
+  inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+}
+.donut-val { font-family:'Syne',sans-serif; font-size:22px; font-weight:800; }
+.donut-sublabel { font-size:10px; color:var(--text3); }
+
+/* CALENDAR */
+.mini-cal { }
+.cal-header { display:flex;justify-content:space-between;align-items:center;margin-bottom:12px; }
+.cal-month { font-family:'Syne',sans-serif; font-size:14px; font-weight:700; }
+.cal-grid { display:grid;grid-template-columns:repeat(7,1fr);gap:2px; }
+.cal-day-header { text-align:center;font-size:10px;font-weight:700;color:var(--text3);padding:6px 0;text-transform:uppercase; }
+.cal-day {
+  aspect-ratio:1;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:50%;
+  font-size:12px;
+  cursor:pointer;
+  transition:all 0.15s;
+  color:var(--text2);
+}
+.cal-day:hover { background:var(--surface2); color:var(--text); }
+.cal-day.today { background:var(--theme-color,#0066ff); color:#fff; font-weight:700; }
+.cal-day.has-event { position:relative; }
+.cal-day.has-event::after { content:''; position:absolute; bottom:2px; width:4px;height:4px;border-radius:50%; background:var(--accent2); }
+.cal-day.empty { pointer-events:none; }
+
+/* PATIENT HEALTH SCORE */
+.health-ring { position:relative;width:100px;height:100px;margin:0 auto 12px; }
+.health-ring svg { transform:rotate(-90deg); }
+.health-score { 
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+}
+.health-score-val { font-family:'Syne',sans-serif;font-size:24px;font-weight:800; }
+.health-score-label { font-size:10px;color:var(--text3); }
+
+/* RESPONSIVE */
+@media (max-width:768px) {
+  .sidebar { display:none; }
+  .grid-2,.grid-3 { grid-template-columns:1fr; }
+  .form-row { grid-template-columns:1fr; }
+  .stats-grid { grid-template-columns:1fr 1fr; }
+}
+
+/* Toast */
+.toast-container { position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:10px; }
+.toast {
+  background:var(--text);
+  color:#fff;
+  padding:14px 18px;
+  border-radius:12px;
+  font-size:13px;
+  box-shadow:var(--shadow-lg);
+  display:flex;align-items:center;gap:10px;
+  animation:toastIn 0.3s ease;
+  min-width:260px;
+}
+.toast-success { background:#0d7a5f; }
+.toast-error { background:#c53030; }
+@keyframes toastIn { from{transform:translateX(100%);opacity:0} to{transform:none;opacity:1} }
+
+/* Overflow improvements */
+.scroll-x { overflow-x:auto; }
+</style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- LANDING PAGE -->
+<div id="landing">
+  <div class="landing-logo">Medi<span>Flow</span></div>
+  <p class="landing-sub">Smart Hospital Management System — Select your portal</p>
+  <div class="role-cards">
+    <div class="role-card admin-card" onclick="launchApp('admin')">
+      <div class="role-icon">🏥</div>
+      <div class="role-title">Admin</div>
+      <div class="role-desc">Hospital operations, staff management & system oversight</div>
+      <button class="role-btn">Enter Portal →</button>
+    </div>
+    <div class="role-card doctor-card" onclick="launchApp('doctor')">
+      <div class="role-icon">👨‍⚕️</div>
+      <div class="role-title">Doctor</div>
+      <div class="role-desc">Consultations, prescriptions & patient care management</div>
+      <button class="role-btn">Enter Portal →</button>
+    </div>
+    <div class="role-card patient-card" onclick="launchApp('patient')">
+      <div class="role-icon">🧑‍💼</div>
+      <div class="role-title">Patient</div>
+      <div class="role-desc">Book appointments, view records & manage your health</div>
+      <button class="role-btn">Enter Portal →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== ADMIN APP ======================== -->
+<div id="app-admin" class="app app-admin">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="app-logo">Medi<span>Flow</span></div>
+      <span class="role-badge" style="background:#ede9fe;color:#7c3aed;">Admin</span>
+    </div>
+    <div class="topbar-right">
+      <button class="notif-btn">🔔<span class="notif-dot"></span></button>
+      <div class="user-pill">
+        <div class="user-avatar" style="background:#7c3aed;">AS</div>
+        <span class="user-name">Admin Sharma</span>
+      </div>
+      <button class="back-btn" onclick="goHome()">← Exit</button>
+    </div>
+  </div>
+  <div class="main-layout">
+    <nav class="sidebar">
+      <div class="nav-section">Overview</div>
+      <div class="nav-item active" onclick="showPage('admin','dashboard',this)"><span class="nav-icon">📊</span>Dashboard</div>
+      <div class="nav-section">Management</div>
+      <div class="nav-item" onclick="showPage('admin','patients',this)"><span class="nav-icon">👥</span>Patients<span class="nav-badge">248</span></div>
+      <div class="nav-item" onclick="showPage('admin','doctors',this)"><span class="nav-icon">👨‍⚕️</span>Doctors</div>
+      <div class="nav-item" onclick="showPage('admin','appointments',this)"><span class="nav-icon">📅</span>Appointments</div>
+      <div class="nav-item" onclick="showPage('admin','departments',this)"><span class="nav-icon">🏢</span>Departments</div>
+      <div class="nav-section">Operations</div>
+      <div class="nav-item" onclick="showPage('admin','billing',this)"><span class="nav-icon">💳</span>Billing</div>
+      <div class="nav-item" onclick="showPage('admin','inventory',this)"><span class="nav-icon">📦</span>Inventory</div>
+      <div class="nav-item" onclick="showPage('admin','reports',this)"><span class="nav-icon">📈</span>Reports</div>
+      <div class="nav-section">System</div>
+      <div class="nav-item" onclick="showPage('admin','settings',this)"><span class="nav-icon">⚙️</span>Settings</div>
+    </nav>
+    <div class="content">
+      <!-- ADMIN DASHBOARD -->
+      <div id="admin-dashboard" class="page active">
+        <div class="emergency-strip">
+          <span>🚨 Emergency Alert: 2 critical patients in ICU require immediate attention</span>
+          <button onclick="showToast('Emergency team notified!','success')">Notify Team</button>
+        </div>
+        <br>
+        <div class="page-header">
+          <h2>Hospital Dashboard</h2>
+          <p>Monday, March 30, 2026 · MediFlow Central Hospital</p>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card" style="--sc:rgba(124,58,237,0.1)">
+            <div class="stat-icon">🏥</div>
+            <div class="stat-label">Total Patients</div>
+            <div class="stat-value">1,248</div>
+            <div class="stat-delta delta-up">↑ 12% this month</div>
+          </div>
+          <div class="stat-card" style="--sc:rgba(0,102,255,0.1)">
+            <div class="stat-icon">👨‍⚕️</div>
+            <div class="stat-label">Active Doctors</div>
+            <div class="stat-value">42</div>
+            <div class="stat-delta">8 departments</div>
+          </div>
+          <div class="stat-card" style="--sc:rgba(0,197,163,0.1)">
+            <div class="stat-icon">📅</div>
+            <div class="stat-label">Today's Appts</div>
+            <div class="stat-value">89</div>
+            <div class="stat-delta delta-up">↑ 5 pending</div>
+          </div>
+          <div class="stat-card" style="--sc:rgba(245,158,11,0.1)">
+            <div class="stat-icon">🛏️</div>
+            <div class="stat-label">Bed Occupancy</div>
+            <div class="stat-value">78%</div>
+            <div class="stat-delta delta-down">↓ 2% from yesterday</div>
+          </div>
+          <div class="stat-card" style="--sc:rgba(255,92,92,0.1)">
+            <div class="stat-icon">🚑</div>
+            <div class="stat-label">Emergencies Today</div>
+            <div class="stat-value">7</div>
+            <div class="stat-delta delta-up">↑ 3 critical</div>
+          </div>
+          <div class="stat-card" style="--sc:rgba(0,197,163,0.1)">
+            <div class="stat-icon">💰</div>
+            <div class="stat-label">Revenue Today</div>
+            <div class="stat-value">₹2.4L</div>
+            <div class="stat-delta delta-up">↑ 8% target</div>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header">
+              <span class="card-title">Weekly Patient Flow</span>
+              <button class="card-action">Export</button>
+            </div>
+            <div class="card-body">
+              <div class="bar-chart" id="adminChart">
+                <div class="bar-wrap"><div class="bar" style="height:60%"></div><div class="bar-label">Mon</div></div>
+                <div class="bar-wrap"><div class="bar" style="height:80%"></div><div class="bar-label">Tue</div></div>
+                <div class="bar-wrap"><div class="bar" style="height:55%"></div><div class="bar-label">Wed</div></div>
+                <div class="bar-wrap"><div class="bar" style="height:90%"></div><div class="bar-label">Thu</div></div>
+                <div class="bar-wrap"><div class="bar" style="height:70%"></div><div class="bar-label">Fri</div></div>
+                <div class="bar-wrap"><div class="bar" style="height:45%"></div><div class="bar-label">Sat</div></div>
+                <div class="bar-wrap"><div class="bar" style="height:30%"></div><div class="bar-label">Sun</div></div>
+              </div>
+              <p style="font-size:12px;color:var(--text3);margin-top:12px;">Avg: 127 patients/day this week</p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">Department Load</span></div>
+            <div class="card-body">
+              <div style="margin-bottom:14px">
+                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px"><span>Cardiology</span><span style="font-weight:700">92%</span></div>
+                <div class="progress-bar"><div class="progress-fill" style="width:92%;background:#ff5c5c"></div></div>
+              </div>
+              <div style="margin-bottom:14px">
+                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px"><span>Orthopedics</span><span style="font-weight:700">78%</span></div>
+                <div class="progress-bar"><div class="progress-fill" style="width:78%;background:#f59e0b"></div></div>
+              </div>
+              <div style="margin-bottom:14px">
+                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px"><span>Neurology</span><span style="font-weight:700">61%</span></div>
+                <div class="progress-bar"><div class="progress-fill" style="width:61%"></div></div>
+              </div>
+              <div style="margin-bottom:14px">
+                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px"><span>Pediatrics</span><span style="font-weight:700">45%</span></div>
+                <div class="progress-bar"><div class="progress-fill" style="width:45%;background:#00c5a3"></div></div>
+              </div>
+              <div>
+                <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px"><span>General Medicine</span><span style="font-weight:700">83%</span></div>
+                <div class="progress-bar"><div class="progress-fill" style="width:83%;background:#f59e0b"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="card">
+          <div class="card-header">
+            <span class="card-title">Recent Admissions</span>
+            <button class="card-action" onclick="showPage('admin','patients',document.querySelector('[onclick*=\"admin-patients\"]'))">View All</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Patient</th><th>Age</th><th>Department</th><th>Doctor</th><th>Status</th><th>Admitted</th><th>Action</th></tr></thead>
+              <tbody>
+                <tr><td><div style="display:flex;gap:10px;align-items:center"><div class="avatar" style="background:#dbeafe;color:#1e40af">RK</div>Rajesh Kumar</div></td><td>54</td><td>Cardiology</td><td>Dr. Priya Nair</td><td><span class="badge badge-red">Critical</span></td><td>Today 08:30</td><td><button class="btn btn-sm btn-secondary" onclick="showToast('Patient record opened')">View</button></td></tr>
+                <tr><td><div style="display:flex;gap:10px;align-items:center"><div class="avatar" style="background:#d1fae5;color:#065f46">AL</div>Anita Lal</div></td><td>34</td><td>Gynecology</td><td>Dr. Suresh Iyer</td><td><span class="badge badge-green">Stable</span></td><td>Today 09:15</td><td><button class="btn btn-sm btn-secondary" onclick="showToast('Patient record opened')">View</button></td></tr>
+                <tr><td><div style="display:flex;gap:10px;align-items:center"><div class="avatar" style="background:#ede9fe;color:#5b21b6">VM</div>Vikram Mehta</div></td><td>67</td><td>Orthopedics</td><td>Dr. Kavitha Rao</td><td><span class="badge badge-yellow">Monitoring</span></td><td>Yesterday</td><td><button class="btn btn-sm btn-secondary" onclick="showToast('Patient record opened')">View</button></td></tr>
+                <tr><td><div style="display:flex;gap:10px;align-items:center"><div class="avatar" style="background:#fef3c7;color:#92400e">SP</div>Sita Patel</div></td><td>28</td><td>Neurology</td><td>Dr. Arjun Sharma</td><td><span class="badge badge-blue">Under Treatment</span></td><td>Yesterday</td><td><button class="btn btn-sm btn-secondary" onclick="showToast('Patient record opened')">View</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADMIN PATIENTS -->
+      <div id="admin-patients" class="page">
+        <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div><h2>Patient Management</h2><p>Manage all registered patients</p></div>
+          <div style="display:flex;gap:10px;align-items:center">
+            <div class="search-bar"><span class="search-icon">🔍</span><input type="text" placeholder="Search patients..."></div>
+            <button class="btn btn-primary" onclick="openModal('addPatientModal')">+ Add Patient</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Patient ID</th><th>Name</th><th>Age/Sex</th><th>Contact</th><th>Blood Group</th><th>Last Visit</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody>
+                <tr><td style="font-family:'Syne',sans-serif;font-weight:700;color:var(--theme-color)">#P-0421</td><td><div style="display:flex;gap:10px;align-items:center"><div class="avatar" style="background:#dbeafe;color:#1e40af">RK</div><div><div style="font-weight:600">Rajesh Kumar</div><div style="font-size:11px;color:var(--text3)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="2f5d4e454a5c476f4a424e4643014c4042">[email&#160;protected]</a></div></div></div></td><td>54 / M</td><td>+91 98765 43210</td><td><span class="badge badge-red">B+</span></td><td>30 Mar 2026</td><td><span class="badge badge-red">Critical</span></td><td><button class="btn btn-sm btn-primary" onclick="showToast('Viewing patient profile')">View</button></td></tr>
+                <tr><td style="font-family:'Syne',sans-serif;font-weight:700;color:var(--theme-color)">#P-0420</td><td><div style="display:flex;gap:10px;align-items:center"><div class="avatar" style="background:#d1fae5;color:#065f46">AL</div><div><div style="font-weight:600">Anita Lal</div><div style="font-size:11px;color:var(--text3)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="1d7c7374697c5d78707c7471337e7270">[email&#160;protected]</a></div></div></div></td><td>34 / F</td><td>+91 98765 11111</td><td><span class="badge badge-blue">A+</span></td><td>30 Mar 2026</td><td><span class="badge badge-green">Stable</span></td><td><button class="btn btn-sm btn-primary" onclick="showToast('Viewing patient profile')">View</button></td></tr>
+                <tr><td style="font-family:'Syne',sans-serif;font-weight:700;color:var(--theme-color)">#P-0419</td><td><div style="display:flex;gap:10px;align-items:center"><div class="avatar" style="background:#ede9fe;color:#5b21b6">VM</div><div><div style="font-weight:600">Vikram Mehta</div><div style="font-size:11px;color:var(--text3)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="7f0916140d1e123f1a121e1613511c1012">[email&#160;protected]</a></div></div></div></td><td>67 / M</td><td>+91 91234 56789</td><td><span class="badge badge-purple">O-</span></td><td>29 Mar 2026</td><td><span class="badge badge-yellow">Monitoring</span></td><td><button class="btn btn-sm btn-primary" onclick="showToast('Viewing patient profile')">View</button></td></tr>
+                <tr><td style="font-family:'Syne',sans-serif;font-weight:700;color:var(--theme-color)">#P-0418</td><td><div style="display:flex;gap:10px;align-items:center"><div class="avatar" style="background:#fef3c7;color:#92400e">SP</div><div><div style="font-weight:600">Sita Patel</div><div style="font-size:11px;color:var(--text3)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="84f7edf0e5c4e1e9e5ede8aae7ebe9">[email&#160;protected]</a></div></div></div></td><td>28 / F</td><td>+91 87654 32109</td><td><span class="badge badge-green">AB+</span></td><td>29 Mar 2026</td><td><span class="badge badge-blue">Under Tx</span></td><td><button class="btn btn-sm btn-primary" onclick="showToast('Viewing patient profile')">View</button></td></tr>
+                <tr><td style="font-family:'Syne',sans-serif;font-weight:700;color:var(--theme-color)">#P-0417</td><td><div style="display:flex;gap:10px;align-items:center"><div class="avatar" style="background:#fee2e2;color:#991b1b">MG</div><div><div style="font-weight:600">Mohit Gupta</div><div style="font-size:11px;color:var(--text3)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="5f323037362b1f3a323e3633713c3032">[email&#160;protected]</a></div></div></div></td><td>45 / M</td><td>+91 76543 21098</td><td><span class="badge badge-gray">O+</span></td><td>28 Mar 2026</td><td><span class="badge badge-gray">Discharged</span></td><td><button class="btn btn-sm btn-secondary" onclick="showToast('Viewing patient profile')">View</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADMIN DOCTORS -->
+      <div id="admin-doctors" class="page">
+        <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div><h2>Doctor Management</h2><p>Manage medical staff and schedules</p></div>
+          <button class="btn btn-primary" onclick="openModal('addDoctorModal')">+ Add Doctor</button>
+        </div>
+        <div class="grid-3" style="margin-bottom:20px">
+          <div class="card">
+            <div class="card-body" style="text-align:center">
+              <div style="font-size:32px;margin-bottom:8px">👨‍⚕️</div>
+              <div style="font-family:'Syne',sans-serif;font-size:28px;font-weight:800">42</div>
+              <div style="font-size:12px;color:var(--text3)">Total Doctors</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body" style="text-align:center">
+              <div style="font-size:32px;margin-bottom:8px">✅</div>
+              <div style="font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:#00c5a3">38</div>
+              <div style="font-size:12px;color:var(--text3)">On Duty Today</div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-body" style="text-align:center">
+              <div style="font-size:32px;margin-bottom:8px">🏢</div>
+              <div style="font-family:'Syne',sans-serif;font-size:28px;font-weight:800">8</div>
+              <div style="font-size:12px;color:var(--text3)">Departments</div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Doctor</th><th>Specialization</th><th>Department</th><th>Patients Today</th><th>Status</th><th>Experience</th><th>Actions</th></tr></thead>
+              <tbody>
+                <tr><td><div style="display:flex;gap:10px;align-items:center"><div class="avatar" style="background:#dbeafe;color:#1e40af">PN</div><div><div style="font-weight:600">Dr. Priya Nair</div><div style="font-size:11px;color:var(--text3)">MBBS, MD Cardiology</div></div></div></td><td>Cardiologist</td><td>Cardiology</td><td>18</td><td><span class="badge badge-green">On Duty</span></td><td>14 yrs</td><td><button class="btn btn-sm btn-secondary" onclick="showToast('Doctor profile opened')">View</button></td></tr>
+                <tr><td><div style="display:flex;gap:10px;align-items:center"><div class="avatar" style="background:#d1fae5;color:#065f46">SI</div><div><div style="font-weight:600">Dr. Suresh Iyer</div><div style="font-size:11px;color:var(--text3)">MBBS, MS Gynecology</div></div></div></td><td>Gynecologist</td><td>Gynecology</td><td>12</td><td><span class="badge badge-green">On Duty</span></td><td>10 yrs</td><td><button class="btn btn-sm btn-secondary" onclick="showToast('Doctor profile opened')">View</button></td></tr>
+                <tr><td><div style="display:flex;gap:10px;align-items:center"><div class="avatar" style="background:#ede9fe;color:#5b21b6">KR</div><div><div style="font-weight:600">Dr. Kavitha Rao</div><div style="font-size:11px;color:var(--text3)">MBBS, MS Orthopedics</div></div></div></td><td>Orthopedician</td><td>Orthopedics</td><td>9</td><td><span class="badge badge-yellow">On Leave</span></td><td>8 yrs</td><td><button class="btn btn-sm btn-secondary" onclick="showToast('Doctor profile opened')">View</button></td></tr>
+                <tr><td><div style="display:flex;gap:10px;align-items:center"><div class="avatar" style="background:#fef3c7;color:#92400e">AS</div><div><div style="font-weight:600">Dr. Arjun Sharma</div><div style="font-size:11px;color:var(--text3)">MBBS, DM Neurology</div></div></div></td><td>Neurologist</td><td>Neurology</td><td>15</td><td><span class="badge badge-green">On Duty</span></td><td>12 yrs</td><td><button class="btn btn-sm btn-secondary" onclick="showToast('Doctor profile opened')">View</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADMIN APPOINTMENTS -->
+      <div id="admin-appointments" class="page">
+        <div class="page-header">
+          <h2>Appointment Management</h2>
+          <p>View and manage all hospital appointments</p>
+        </div>
+        <div class="tabs">
+          <div class="tab active" onclick="switchTab(this,'appt-today')">Today (89)</div>
+          <div class="tab" onclick="switchTab(this,'appt-upcoming')">Upcoming</div>
+          <div class="tab" onclick="switchTab(this,'appt-completed')">Completed</div>
+        </div>
+        <div id="appt-today">
+          <div class="card">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Appt ID</th><th>Patient</th><th>Doctor</th><th>Time</th><th>Type</th><th>Status</th><th>Action</th></tr></thead>
+                <tbody>
+                  <tr><td style="font-weight:700">#A-1092</td><td>Rajesh Kumar</td><td>Dr. Priya Nair</td><td>10:00 AM</td><td>Follow-up</td><td><span class="badge badge-green">Completed</span></td><td><button class="btn btn-sm btn-secondary" onclick="showToast('Appointment details')">View</button></td></tr>
+                  <tr><td style="font-weight:700">#A-1093</td><td>Anita Lal</td><td>Dr. Suresh Iyer</td><td>10:30 AM</td><td>Check-up</td><td><span class="badge badge-blue">In Progress</span></td><td><button class="btn btn-sm btn-secondary" onclick="showToast('Appointment details')">View</button></td></tr>
+                  <tr><td style="font-weight:700">#A-1094</td><td>Sita Patel</td><td>Dr. Arjun Sharma</td><td>11:00 AM</td><td>Consultation</td><td><span class="badge badge-yellow">Waiting</span></td><td><button class="btn btn-sm btn-secondary" onclick="showToast('Appointment details')">View</button></td></tr>
+                  <tr><td style="font-weight:700">#A-1095</td><td>Mohit Gupta</td><td>Dr. Priya Nair</td><td>11:30 AM</td><td>New Patient</td><td><span class="badge badge-yellow">Waiting</span></td><td><button class="btn btn-sm btn-secondary" onclick="showToast('Appointment details')">View</button></td></tr>
+                  <tr><td style="font-weight:700">#A-1096</td><td>Deepa Singh</td><td>Dr. Kavitha Rao</td><td>02:00 PM</td><td>Post-Op</td><td><span class="badge badge-gray">Scheduled</span></td><td><button class="btn btn-sm btn-secondary" onclick="showToast('Appointment details')">View</button></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div id="appt-upcoming" style="display:none">
+          <div class="alert alert-info">📅 Showing next 7 days of appointments</div>
+          <div class="card"><div class="card-body"><p style="color:var(--text2)">31 Mar — 14 appointments scheduled</p><p style="color:var(--text2);margin-top:8px">1 Apr — 18 appointments scheduled</p><p style="color:var(--text2);margin-top:8px">2 Apr — 12 appointments scheduled</p></div></div>
+        </div>
+        <div id="appt-completed" style="display:none">
+          <div class="card"><div class="card-body"><p style="color:var(--text2)">342 appointments completed this month with 96% satisfaction rate.</p></div></div>
+        </div>
+      </div>
+
+      <!-- ADMIN BILLING -->
+      <div id="admin-billing" class="page">
+        <div class="page-header">
+          <h2>Billing & Finance</h2>
+          <p>Revenue tracking and invoice management</p>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card"><div class="stat-icon">💰</div><div class="stat-label">Today's Revenue</div><div class="stat-value">₹2.4L</div></div>
+          <div class="stat-card"><div class="stat-icon">📊</div><div class="stat-label">Monthly Revenue</div><div class="stat-value">₹38.7L</div></div>
+          <div class="stat-card"><div class="stat-icon">🧾</div><div class="stat-label">Pending Bills</div><div class="stat-value">23</div></div>
+          <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-label">Collected</div><div class="stat-value">₹1.8L</div></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Recent Invoices</span><button class="btn btn-sm btn-primary" onclick="showToast('New invoice created!')">+ New Invoice</button></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Invoice #</th><th>Patient</th><th>Amount</th><th>Services</th><th>Date</th><th>Status</th><th>Action</th></tr></thead>
+              <tbody>
+                <tr><td>#INV-2024</td><td>Rajesh Kumar</td><td>₹18,500</td><td>Cardiology + Diagnostics</td><td>30 Mar</td><td><span class="badge badge-green">Paid</span></td><td><button class="btn btn-sm btn-secondary" onclick="showToast('Invoice opened')">View</button></td></tr>
+                <tr><td>#INV-2023</td><td>Anita Lal</td><td>₹8,200</td><td>OPD + Lab Tests</td><td>30 Mar</td><td><span class="badge badge-yellow">Pending</span></td><td><button class="btn btn-sm btn-secondary" onclick="showToast('Invoice opened')">View</button></td></tr>
+                <tr><td>#INV-2022</td><td>Vikram Mehta</td><td>₹45,000</td><td>Orthopedic Surgery</td><td>29 Mar</td><td><span class="badge badge-green">Paid</span></td><td><button class="btn btn-sm btn-secondary" onclick="showToast('Invoice opened')">View</button></td></tr>
+                <tr><td>#INV-2021</td><td>Sita Patel</td><td>₹12,800</td><td>Neurology Consultation</td><td>29 Mar</td><td><span class="badge badge-red">Overdue</span></td><td><button class="btn btn-sm btn-danger btn-sm" onclick="showToast('Reminder sent!')">Remind</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADMIN INVENTORY -->
+      <div id="admin-inventory" class="page">
+        <div class="page-header"><h2>Inventory Management</h2><p>Track medical supplies and equipment</p></div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Medical Supplies</span><button class="btn btn-sm btn-primary" onclick="showToast('Reorder placed!')">+ Reorder</button></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Item</th><th>Category</th><th>Stock</th><th>Threshold</th><th>Status</th><th>Supplier</th></tr></thead>
+              <tbody>
+                <tr><td>Paracetamol 500mg</td><td>Medicine</td><td>8,420 units</td><td>1,000</td><td><span class="badge badge-green">In Stock</span></td><td>MedPharma Ltd</td></tr>
+                <tr><td>Surgical Gloves (M)</td><td>Consumable</td><td>450 boxes</td><td>100</td><td><span class="badge badge-green">In Stock</span></td><td>SafeGuard Co</td></tr>
+                <tr><td>IV Cannula 18G</td><td>Consumable</td><td>82 units</td><td>100</td><td><span class="badge badge-red">Low Stock</span></td><td>MedSupply Inc</td></tr>
+                <tr><td>Morphine Injection</td><td>Medicine</td><td>35 vials</td><td>50</td><td><span class="badge badge-yellow">Critical</span></td><td>PharmaDirect</td></tr>
+                <tr><td>ECG Electrodes</td><td>Equipment</td><td>1,200 units</td><td>300</td><td><span class="badge badge-green">In Stock</span></td><td>CardioTech</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADMIN REPORTS -->
+      <div id="admin-reports" class="page">
+        <div class="page-header"><h2>Reports & Analytics</h2><p>Hospital performance insights</p></div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header"><span class="card-title">Patient Demographics</span></div>
+            <div class="card-body">
+              <div style="display:flex;gap:20px;align-items:center">
+                <div class="donut-wrap">
+                  <svg width="120" height="120" viewBox="0 0 120 120">
+                    <circle cx="60" cy="60" r="50" fill="none" stroke="#e8eef5" stroke-width="18"/>
+                    <circle cx="60" cy="60" r="50" fill="none" stroke="#7c3aed" stroke-width="18" stroke-dasharray="188 126" stroke-linecap="round"/>
+                    <circle cx="60" cy="60" r="50" fill="none" stroke="#0066ff" stroke-width="18" stroke-dasharray="80 234" stroke-dashoffset="-188" stroke-linecap="round"/>
+                    <circle cx="60" cy="60" r="50" fill="none" stroke="#00c5a3" stroke-width="18" stroke-dasharray="46 268" stroke-dashoffset="-268" stroke-linecap="round"/>
+                  </svg>
+                  <div class="donut-center"><div class="donut-val">1.2k</div><div class="donut-sublabel">Total</div></div>
+                </div>
+                <div>
+                  <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><div style="width:10px;height:10px;border-radius:2px;background:#7c3aed"></div><span style="font-size:12px">Adult (60%) · 748</span></div>
+                  <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px"><div style="width:10px;height:10px;border-radius:2px;background:#0066ff"></div><span style="font-size:12px">Senior (25%) · 312</span></div>
+                  <div style="display:flex;align-items:center;gap:8px"><div style="width:10px;height:10px;border-radius:2px;background:#00c5a3"></div><span style="font-size:12px">Child (15%) · 188</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">Monthly Admissions Trend</span></div>
+            <div class="card-body">
+              <div class="bar-chart">
+                <div class="bar-wrap"><div class="bar" style="height:50%;background:#7c3aed;opacity:0.6"></div><div class="bar-label">Oct</div></div>
+                <div class="bar-wrap"><div class="bar" style="height:65%;background:#7c3aed;opacity:0.6"></div><div class="bar-label">Nov</div></div>
+                <div class="bar-wrap"><div class="bar" style="height:80%;background:#7c3aed;opacity:0.6"></div><div class="bar-label">Dec</div></div>
+                <div class="bar-wrap"><div class="bar" style="height:55%;background:#7c3aed;opacity:0.6"></div><div class="bar-label">Jan</div></div>
+                <div class="bar-wrap"><div class="bar" style="height:70%;background:#7c3aed;opacity:0.6"></div><div class="bar-label">Feb</div></div>
+                <div class="bar-wrap"><div class="bar" style="height:90%;background:#7c3aed"></div><div class="bar-label">Mar</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Export Reports</span></div>
+          <div class="card-body" style="display:flex;gap:12px;flex-wrap:wrap">
+            <button class="btn btn-secondary" onclick="showToast('Patient report downloaded!')">📄 Patient Report</button>
+            <button class="btn btn-secondary" onclick="showToast('Financial report downloaded!')">💰 Financial Report</button>
+            <button class="btn btn-secondary" onclick="showToast('Staff report downloaded!')">👥 Staff Report</button>
+            <button class="btn btn-secondary" onclick="showToast('Inventory report downloaded!')">📦 Inventory Report</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADMIN SETTINGS -->
+      <div id="admin-settings" class="page">
+        <div class="page-header"><h2>System Settings</h2><p>Configure hospital system preferences</p></div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header"><span class="card-title">Hospital Information</span></div>
+            <div class="card-body">
+              <div class="form-group"><label class="form-label">Hospital Name</label><input class="form-input" value="MediFlow Central Hospital"></div>
+              <div class="form-group"><label class="form-label">Registration No.</label><input class="form-input" value="MH-HOS-2018-0042"></div>
+              <div class="form-group"><label class="form-label">Emergency Contact</label><input class="form-input" value="+91 044-28001234"></div>
+              <button class="btn btn-primary" onclick="showToast('Settings saved!','success')">Save Changes</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">System Configuration</span></div>
+            <div class="card-body">
+              <div class="form-group"><label class="form-label">Appointment Slot Duration</label>
+                <select class="form-select"><option>15 minutes</option><option selected>30 minutes</option><option>45 minutes</option><option>60 minutes</option></select>
+              </div>
+              <div class="form-group"><label class="form-label">Max Daily Appointments / Doctor</label><input class="form-input" value="20" type="number"></div>
+              <div class="form-group"><label class="form-label">SMS Notifications</label>
+                <select class="form-select"><option>Enabled</option><option>Disabled</option></select>
+              </div>
+              <button class="btn btn-primary" onclick="showToast('Configuration updated!','success')">Update Config</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ADMIN DEPARTMENTS -->
+      <div id="admin-departments" class="page">
+        <div class="page-header"><h2>Departments</h2><p>Manage hospital departments</p></div>
+        <div class="grid-3">
+          <div class="card" style="border-left:4px solid #ff5c5c"><div class="card-body"><div style="font-size:24px;margin-bottom:8px">❤️</div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:15px">Cardiology</div><div style="font-size:12px;color:var(--text3);margin-top:4px">6 Doctors · 92% occupied</div><div style="margin-top:12px"><span class="badge badge-red">High Load</span></div></div></div>
+          <div class="card" style="border-left:4px solid #0066ff"><div class="card-body"><div style="font-size:24px;margin-bottom:8px">🧠</div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:15px">Neurology</div><div style="font-size:12px;color:var(--text3);margin-top:4px">4 Doctors · 61% occupied</div><div style="margin-top:12px"><span class="badge badge-blue">Normal</span></div></div></div>
+          <div class="card" style="border-left:4px solid #00c5a3"><div class="card-body"><div style="font-size:24px;margin-bottom:8px">🦴</div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:15px">Orthopedics</div><div style="font-size:12px;color:var(--text3);margin-top:4px">5 Doctors · 78% occupied</div><div style="margin-top:12px"><span class="badge badge-yellow">Moderate</span></div></div></div>
+          <div class="card" style="border-left:4px solid #f59e0b"><div class="card-body"><div style="font-size:24px;margin-bottom:8px">🍼</div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:15px">Pediatrics</div><div style="font-size:12px;color:var(--text3);margin-top:4px">5 Doctors · 45% occupied</div><div style="margin-top:12px"><span class="badge badge-green">Available</span></div></div></div>
+          <div class="card" style="border-left:4px solid #7c3aed"><div class="card-body"><div style="font-size:24px;margin-bottom:8px">🔬</div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:15px">General Medicine</div><div style="font-size:12px;color:var(--text3);margin-top:4px">8 Doctors · 83% occupied</div><div style="margin-top:12px"><span class="badge badge-yellow">High</span></div></div></div>
+          <div class="card" style="border-left:4px solid #ec4899"><div class="card-body"><div style="font-size:24px;margin-bottom:8px">👶</div><div style="font-family:'Syne',sans-serif;font-weight:700;font-size:15px">Gynecology</div><div style="font-size:12px;color:var(--text3);margin-top:4px">4 Doctors · 68% occupied</div><div style="margin-top:12px"><span class="badge badge-blue">Normal</span></div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== DOCTOR APP ======================== -->
+<div id="app-doctor" class="app app-doctor">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="app-logo">Medi<span>Flow</span></div>
+      <span class="role-badge" style="background:#dbeafe;color:#1e40af;">Doctor</span>
+    </div>
+    <div class="topbar-right">
+      <button class="notif-btn">🔔<span class="notif-dot"></span></button>
+      <div class="user-pill">
+        <div class="user-avatar" style="background:#0066ff;">PN</div>
+        <span class="user-name">Dr. Priya Nair</span>
+      </div>
+      <button class="back-btn" onclick="goHome()">← Exit</button>
+    </div>
+  </div>
+  <div class="main-layout">
+    <nav class="sidebar">
+      <div class="nav-section">Overview</div>
+      <div class="nav-item active" onclick="showPage('doctor','dashboard',this)"><span class="nav-icon">📊</span>Dashboard</div>
+      <div class="nav-section">Clinical</div>
+      <div class="nav-item" onclick="showPage('doctor','appointments',this)"><span class="nav-icon">📅</span>My Appointments<span class="nav-badge">5</span></div>
+      <div class="nav-item" onclick="showPage('doctor','patients',this)"><span class="nav-icon">👥</span>My Patients</div>
+      <div class="nav-item" onclick="showPage('doctor','prescriptions',this)"><span class="nav-icon">💊</span>Prescriptions</div>
+      <div class="nav-item" onclick="showPage('doctor','records',this)"><span class="nav-icon">📋</span>Medical Records</div>
+      <div class="nav-section">Tools</div>
+      <div class="nav-item" onclick="showPage('doctor','messages',this)"><span class="nav-icon">💬</span>Messages<span class="nav-badge">3</span></div>
+      <div class="nav-item" onclick="showPage('doctor','schedule',this)"><span class="nav-icon">🗓️</span>My Schedule</div>
+      <div class="nav-section">Profile</div>
+      <div class="nav-item" onclick="showPage('doctor','profile',this)"><span class="nav-icon">👤</span>My Profile</div>
+    </nav>
+    <div class="content">
+      <!-- DOCTOR DASHBOARD -->
+      <div id="doctor-dashboard" class="page active">
+        <div class="page-header">
+          <h2>Good morning, Dr. Priya 👋</h2>
+          <p>Monday, March 30, 2026 · Cardiology Department</p>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card" style="--sc:rgba(0,102,255,0.1)">
+            <div class="stat-icon">📅</div><div class="stat-label">Today's Appointments</div><div class="stat-value">18</div>
+            <div class="stat-delta">5 pending · 13 completed</div>
+          </div>
+          <div class="stat-card" style="--sc:rgba(0,197,163,0.1)">
+            <div class="stat-icon">👥</div><div class="stat-label">Total Patients</div><div class="stat-value">184</div>
+            <div class="stat-delta delta-up">↑ 3 new this week</div>
+          </div>
+          <div class="stat-card" style="--sc:rgba(245,158,11,0.1)">
+            <div class="stat-icon">💊</div><div class="stat-label">Prescriptions Today</div><div class="stat-value">11</div>
+          </div>
+          <div class="stat-card" style="--sc:rgba(255,92,92,0.1)">
+            <div class="stat-icon">🚨</div><div class="stat-label">Critical Patients</div><div class="stat-value">2</div>
+            <div class="stat-delta delta-down">Requires attention</div>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header"><span class="card-title">Today's Schedule</span><button class="card-action" onclick="showPage('doctor','appointments',document.querySelector('#app-doctor .nav-item:nth-child(4))'))">View All</button></div>
+            <div class="card-body">
+              <div style="display:flex;flex-direction:column;gap:12px">
+                <div style="display:flex;gap:12px;align-items:center;padding:12px;background:var(--surface2);border-radius:10px">
+                  <div style="background:#0066ff;color:#fff;padding:6px 10px;border-radius:8px;font-size:11px;font-weight:700;text-align:center;min-width:52px">10:00<br>AM</div>
+                  <div><div style="font-weight:600;font-size:13px">Rajesh Kumar</div><div style="font-size:11px;color:var(--text3)">Follow-up · Room 204</div></div>
+                  <span class="badge badge-green" style="margin-left:auto">Done</span>
+                </div>
+                <div style="display:flex;gap:12px;align-items:center;padding:12px;background:#dbeafe;border-radius:10px">
+                  <div style="background:#0066ff;color:#fff;padding:6px 10px;border-radius:8px;font-size:11px;font-weight:700;text-align:center;min-width:52px">10:30<br>AM</div>
+                  <div><div style="font-weight:600;font-size:13px">Mohit Gupta</div><div style="font-size:11px;color:#1e40af">New Patient · Room 204</div></div>
+                  <span class="badge badge-blue" style="margin-left:auto">Now</span>
+                </div>
+                <div style="display:flex;gap:12px;align-items:center;padding:12px;border:1px solid var(--border);border-radius:10px">
+                  <div style="background:var(--surface2);color:var(--text2);padding:6px 10px;border-radius:8px;font-size:11px;font-weight:700;text-align:center;min-width:52px">11:00<br>AM</div>
+                  <div><div style="font-weight:600;font-size:13px">Deepa Singh</div><div style="font-size:11px;color:var(--text3)">Consultation · Room 204</div></div>
+                  <span class="badge badge-gray" style="margin-left:auto">Upcoming</span>
+                </div>
+                <div style="display:flex;gap:12px;align-items:center;padding:12px;border:1px solid var(--border);border-radius:10px">
+                  <div style="background:var(--surface2);color:var(--text2);padding:6px 10px;border-radius:8px;font-size:11px;font-weight:700;text-align:center;min-width:52px">11:30<br>AM</div>
+                  <div><div style="font-weight:600;font-size:13px">Aruna Krishnan</div><div style="font-size:11px;color:var(--text3)">ECG Review · Room 204</div></div>
+                  <span class="badge badge-gray" style="margin-left:auto">Upcoming</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">Critical Patients Monitor</span></div>
+            <div class="card-body">
+              <div style="border:1.5px solid #fee2e2;border-radius:12px;padding:16px;margin-bottom:14px;background:#fff5f5">
+                <div style="display:flex;justify-content:space-between;margin-bottom:10px">
+                  <div style="font-weight:700">Rajesh Kumar — ICU</div>
+                  <span class="badge badge-red">Critical</span>
+                </div>
+                <div class="vitals-grid">
+                  <div class="vital-card"><div class="vital-value" style="color:#ff5c5c">142/90</div><div class="vital-unit">mmHg</div><div class="vital-label">BP</div></div>
+                  <div class="vital-card"><div class="vital-value">98</div><div class="vital-unit">bpm</div><div class="vital-label">HR</div></div>
+                  <div class="vital-card"><div class="vital-value">36.8</div><div class="vital-unit">°C</div><div class="vital-label">Temp</div></div>
+                  <div class="vital-card"><div class="vital-value" style="color:#ff5c5c">94</div><div class="vital-unit">%</div><div class="vital-label">SpO₂</div></div>
+                </div>
+              </div>
+              <button class="btn btn-primary" style="width:100%" onclick="showToast('Patient chart opened')">📋 View Full Chart</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DOCTOR APPOINTMENTS -->
+      <div id="doctor-appointments" class="page">
+        <div class="page-header">
+          <h2>My Appointments</h2>
+          <p>Manage your daily consultations</p>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Today — March 30, 2026</span></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Time</th><th>Patient</th><th>Type</th><th>Chief Complaint</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody>
+                <tr><td style="font-weight:700;color:var(--theme-color)">10:00 AM</td><td>Rajesh Kumar · 54M</td><td>Follow-up</td><td>Chest pain recurring</td><td><span class="badge badge-green">Completed</span></td><td><button class="btn btn-sm btn-secondary" onclick="showToast('Consultation notes opened')">Notes</button></td></tr>
+                <tr><td style="font-weight:700;color:var(--theme-color)">10:30 AM</td><td>Mohit Gupta · 45M</td><td>New Patient</td><td>Irregular heartbeat</td><td><span class="badge badge-blue">In Progress</span></td><td><button class="btn btn-sm btn-primary" onclick="openModal('consultModal')">Start</button></td></tr>
+                <tr><td style="font-weight:700;color:#8ba0b8">11:00 AM</td><td>Deepa Singh · 38F</td><td>Consultation</td><td>Palpitations</td><td><span class="badge badge-yellow">Waiting</span></td><td><button class="btn btn-sm btn-secondary" onclick="showToast('Called patient')">Call</button></td></tr>
+                <tr><td style="font-weight:700;color:#8ba0b8">11:30 AM</td><td>Aruna Krishnan · 62F</td><td>ECG Review</td><td>Routine check</td><td><span class="badge badge-gray">Scheduled</span></td><td><button class="btn btn-sm btn-secondary" onclick="showToast('Details viewed')">View</button></td></tr>
+                <tr><td style="font-weight:700;color:#8ba0b8">02:00 PM</td><td>Kiran Rao · 50M</td><td>Post-Op</td><td>Stent follow-up</td><td><span class="badge badge-gray">Scheduled</span></td><td><button class="btn btn-sm btn-secondary" onclick="showToast('Details viewed')">View</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- DOCTOR PATIENTS -->
+      <div id="doctor-patients" class="page">
+        <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div><h2>My Patients</h2><p>184 patients under your care</p></div>
+          <div class="search-bar"><span class="search-icon">🔍</span><input type="text" placeholder="Search patients..."></div>
+        </div>
+        <div id="patientListView">
+          <div class="card">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Patient</th><th>Age/Sex</th><th>Diagnosis</th><th>Last Visit</th><th>Next Visit</th><th>Status</th><th>Action</th></tr></thead>
+                <tbody>
+                  <tr><td><div style="display:flex;gap:10px;align-items:center"><div class="avatar" style="background:#fee2e2;color:#991b1b">RK</div><div><div style="font-weight:600">Rajesh Kumar</div><div style="font-size:11px;color:var(--text3)">#P-0421</div></div></div></td><td>54 / M</td><td>Hypertensive HF</td><td>30 Mar 2026</td><td>06 Apr 2026</td><td><span class="badge badge-red">Critical</span></td><td><button class="btn btn-sm btn-primary" onclick="showPatient()">View</button></td></tr>
+                  <tr><td><div style="display:flex;gap:10px;align-items:center"><div class="avatar" style="background:#dbeafe;color:#1e40af">MG</div><div><div style="font-weight:600">Mohit Gupta</div><div style="font-size:11px;color:var(--text3)">#P-0417</div></div></div></td><td>45 / M</td><td>Atrial Fibrillation</td><td>28 Mar 2026</td><td>02 Apr 2026</td><td><span class="badge badge-yellow">Active</span></td><td><button class="btn btn-sm btn-primary" onclick="showPatient()">View</button></td></tr>
+                  <tr><td><div style="display:flex;gap:10px;align-items:center"><div class="avatar" style="background:#d1fae5;color:#065f46">DS</div><div><div style="font-weight:600">Deepa Singh</div><div style="font-size:11px;color:var(--text3)">#P-0415</div></div></div></td><td>38 / F</td><td>Arrhythmia</td><td>25 Mar 2026</td><td>30 Mar 2026</td><td><span class="badge badge-blue">Stable</span></td><td><button class="btn btn-sm btn-primary" onclick="showPatient()">View</button></td></tr>
+                  <tr><td><div style="display:flex;gap:10px;align-items:center"><div class="avatar" style="background:#fef3c7;color:#92400e">AK</div><div><div style="font-weight:600">Aruna Krishnan</div><div style="font-size:11px;color:var(--text3)">#P-0412</div></div></div></td><td>62 / F</td><td>CAD Post-Stent</td><td>15 Mar 2026</td><td>30 Mar 2026</td><td><span class="badge badge-green">Recovering</span></td><td><button class="btn btn-sm btn-primary" onclick="showPatient()">View</button></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        <div id="patientDetailView" style="display:none">
+          <button class="btn btn-secondary" style="margin-bottom:20px" onclick="document.getElementById('patientListView').style.display='';document.getElementById('patientDetailView').style.display='none'">← Back to Patients</button>
+          <div class="grid-2">
+            <div class="card">
+              <div class="card-header">
+                <div style="display:flex;gap:14px;align-items:center">
+                  <div class="avatar" style="width:52px;height:52px;background:#fee2e2;color:#991b1b;font-size:18px">RK</div>
+                  <div><div style="font-family:'Syne',sans-serif;font-size:18px;font-weight:700">Rajesh Kumar</div><div style="font-size:12px;color:var(--text3)">#P-0421 · DOB: 12 Jun 1972</div></div>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="form-row" style="margin-bottom:14px">
+                  <div><div class="form-label">Blood Group</div><div style="font-weight:700;color:#ff5c5c">B+</div></div>
+                  <div><div class="form-label">Allergies</div><div style="font-weight:600">Penicillin</div></div>
+                </div>
+                <div class="form-row">
+                  <div><div class="form-label">Phone</div><div>+91 98765 43210</div></div>
+                  <div><div class="form-label">Emergency Contact</div><div>Sunita Kumar (Wife)</div></div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header"><span class="card-title">Current Vitals</span></div>
+              <div class="card-body">
+                <div class="vitals-grid">
+                  <div class="vital-card"><div class="vital-value" style="color:#ff5c5c">142/90</div><div class="vital-unit">mmHg</div><div class="vital-label">BP</div></div>
+                  <div class="vital-card"><div class="vital-value">98</div><div class="vital-unit">bpm</div><div class="vital-label">HR</div></div>
+                  <div class="vital-card"><div class="vital-value">36.8</div><div class="vital-unit">°C</div><div class="vital-label">Temp</div></div>
+                  <div class="vital-card"><div class="vital-value" style="color:#ff5c5c">94</div><div class="vital-unit">%</div><div class="vital-label">SpO₂</div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <br>
+          <div class="card">
+            <div class="card-header"><span class="card-title">Health Timeline</span></div>
+            <div class="card-body">
+              <ul class="timeline">
+                <li class="timeline-item"><div class="timeline-date">30 Mar 2026</div><div class="timeline-title">ECG & BP Check — Worsening</div><div class="timeline-body">BP 142/90, SpO₂ 94%. Admitted to ICU. Adjusted Lisinopril dosage.</div></li>
+                <li class="timeline-item"><div class="timeline-date">15 Mar 2026</div><div class="timeline-title">Follow-up Consultation</div><div class="timeline-body">BP 138/85, stable. Continued current medications. Advised low-sodium diet.</div></li>
+                <li class="timeline-item"><div class="timeline-date">28 Feb 2026</div><div class="timeline-title">Initial Diagnosis — Hypertensive HF</div><div class="timeline-body">Presented with chest pain and breathlessness. Diagnosed with hypertensive heart failure. Started Lisinopril 5mg + Atenolol 25mg.</div></li>
+                <li class="timeline-item"><div class="timeline-date">20 Jan 2026</div><div class="timeline-title">Routine Check-up</div><div class="timeline-body">BP 150/95. Flagged for further investigation.</div></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DOCTOR PRESCRIPTIONS -->
+      <div id="doctor-prescriptions" class="page">
+        <div class="page-header" style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div><h2>Prescriptions</h2><p>Write and manage prescriptions</p></div>
+          <button class="btn btn-primary" onclick="openModal('prescribeModal')">+ New Prescription</button>
+        </div>
+        <div class="rx-card">
+          <div class="rx-header">
+            <div>
+              <div class="rx-title">Rajesh Kumar — #RX-892</div>
+              <div style="font-size:11px;color:var(--text3)">Issued: 30 Mar 2026 · Hypertensive HF</div>
+            </div>
+            <div style="display:flex;gap:8px">
+              <span class="badge badge-green">Active</span>
+              <button class="btn btn-sm btn-secondary" onclick="showToast('Prescription printed!')">Print</button>
+            </div>
+          </div>
+          <ul class="med-list">
+            <li class="med-item"><div class="med-dot"></div><div><div style="font-weight:600">Lisinopril 10mg</div><div style="font-size:11px;color:var(--text3)">1 tablet · Once daily · Morning · 30 days</div></div></li>
+            <li class="med-item"><div class="med-dot"></div><div><div style="font-weight:600">Atenolol 25mg</div><div style="font-size:11px;color:var(--text3)">1 tablet · Once daily · Night · 30 days</div></div></li>
+            <li class="med-item"><div class="med-dot"></div><div><div style="font-weight:600">Furosemide 40mg</div><div style="font-size:11px;color:var(--text3)">1 tablet · Once daily · Morning · 14 days</div></div></li>
+            <li class="med-item"><div class="med-dot"></div><div><div style="font-weight:600">Aspirin 75mg</div><div style="font-size:11px;color:var(--text3)">1 tablet · Once daily · After food · 30 days</div></div></li>
+          </ul>
+          <div style="background:var(--surface2);border-radius:8px;padding:12px;margin-top:12px;font-size:12px;color:var(--text2)">
+            <strong>Doctor's Notes:</strong> Low sodium diet. Restrict fluids to 1.5L/day. Monitor BP daily. Return if BP > 160/100 or breathlessness worsens.
+          </div>
+        </div>
+        <div class="rx-card">
+          <div class="rx-header">
+            <div>
+              <div class="rx-title">Mohit Gupta — #RX-891</div>
+              <div style="font-size:11px;color:var(--text3)">Issued: 28 Mar 2026 · Atrial Fibrillation</div>
+            </div>
+            <div style="display:flex;gap:8px">
+              <span class="badge badge-green">Active</span>
+              <button class="btn btn-sm btn-secondary" onclick="showToast('Prescription printed!')">Print</button>
+            </div>
+          </div>
+          <ul class="med-list">
+            <li class="med-item"><div class="med-dot"></div><div><div style="font-weight:600">Warfarin 5mg</div><div style="font-size:11px;color:var(--text3)">1 tablet · Once daily · Evening · 90 days</div></div></li>
+            <li class="med-item"><div class="med-dot"></div><div><div style="font-weight:600">Metoprolol 25mg</div><div style="font-size:11px;color:var(--text3)">1 tablet · Twice daily · 60 days</div></div></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- DOCTOR RECORDS -->
+      <div id="doctor-records" class="page">
+        <div class="page-header"><h2>Medical Records</h2><p>Patient investigation reports and documents</p></div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Patient</th><th>Test / Report</th><th>Date</th><th>Result</th><th>Uploaded By</th><th>Action</th></tr></thead>
+              <tbody>
+                <tr><td>Rajesh Kumar</td><td>ECG — 12 Lead</td><td>30 Mar 2026</td><td><span class="badge badge-red">Abnormal</span></td><td>Lab Tech</td><td><button class="btn btn-sm btn-primary" onclick="showToast('Report opened')">View</button></td></tr>
+                <tr><td>Rajesh Kumar</td><td>CBC Blood Test</td><td>29 Mar 2026</td><td><span class="badge badge-yellow">Review</span></td><td>Dr. Priya Nair</td><td><button class="btn btn-sm btn-primary" onclick="showToast('Report opened')">View</button></td></tr>
+                <tr><td>Mohit Gupta</td><td>Holter Monitor 24h</td><td>28 Mar 2026</td><td><span class="badge badge-red">AF Confirmed</span></td><td>Cardiology Lab</td><td><button class="btn btn-sm btn-primary" onclick="showToast('Report opened')">View</button></td></tr>
+                <tr><td>Deepa Singh</td><td>Echo 2D</td><td>25 Mar 2026</td><td><span class="badge badge-green">Normal</span></td><td>Radiology</td><td><button class="btn btn-sm btn-primary" onclick="showToast('Report opened')">View</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- DOCTOR MESSAGES -->
+      <div id="doctor-messages" class="page">
+        <div class="page-header"><h2>Messages</h2><p>Communicate with patients and staff</p></div>
+        <div class="grid-2">
+          <div class="card" style="max-height:520px;overflow-y:auto">
+            <div class="card-header"><span class="card-title">Conversations</span></div>
+            <div class="card-body" style="padding:0">
+              <div id="msgRajesh" style="display:flex;gap:12px;padding:14px 16px;cursor:pointer;background:#dbeafe;border-left:3px solid #0066ff" onclick="selectChat('Rajesh Kumar','RK')">
+                <div class="avatar" style="background:#fee2e2;color:#991b1b">RK</div>
+                <div style="flex:1"><div style="font-weight:600;font-size:13px">Rajesh Kumar</div><div style="font-size:11px;color:var(--text3);margin-top:2px">Doctor, my BP is very high today...</div></div>
+                <div style="font-size:10px;color:var(--text3)">10:22 AM</div>
+              </div>
+              <div style="display:flex;gap:12px;padding:14px 16px;cursor:pointer;border-bottom:1px solid var(--border)" onclick="selectChat('Mohit Gupta','MG')">
+                <div class="avatar" style="background:#dbeafe;color:#1e40af">MG</div>
+                <div style="flex:1"><div style="font-weight:600;font-size:13px">Mohit Gupta</div><div style="font-size:11px;color:var(--text3);margin-top:2px">Thank you for the prescription</div></div>
+                <div style="font-size:10px;color:var(--text3)">9:45 AM</div>
+              </div>
+              <div style="display:flex;gap:12px;padding:14px 16px;cursor:pointer" onclick="selectChat('Admin','AS')">
+                <div class="avatar" style="background:#ede9fe;color:#7c3aed">AS</div>
+                <div style="flex:1"><div style="font-weight:600;font-size:13px">Admin Sharma</div><div style="font-size:11px;color:var(--text3);margin-top:2px">Staff meeting at 3PM today</div></div>
+                <div style="font-size:10px;color:var(--text3)">8:30 AM</div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <div style="display:flex;gap:10px;align-items:center">
+                <div class="avatar" id="chatAvatar" style="background:#fee2e2;color:#991b1b">RK</div>
+                <div><div id="chatName" style="font-weight:700">Rajesh Kumar</div><div style="font-size:11px;color:var(--accent2)">● Online</div></div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="chat-box" id="chatBox">
+                <div class="msg msg-other"><div class="msg-bubble">Doctor, my BP reading at home was 150/95 this morning. Should I be concerned?</div><div class="msg-meta">Rajesh Kumar · 10:15 AM</div></div>
+                <div class="msg msg-self"><div class="msg-bubble">Yes, that's elevated. Please take your Lisinopril immediately and rest. Avoid salt in meals today. Come in tomorrow morning for a check.</div><div class="msg-meta">You · 10:18 AM</div></div>
+                <div class="msg msg-other"><div class="msg-bubble">Doctor, my BP is very high today — 160/100. I'm feeling dizzy. Should I come to emergency?</div><div class="msg-meta">Rajesh Kumar · 10:22 AM</div></div>
+              </div>
+              <div class="chat-input-row">
+                <input class="form-input chat-input" id="chatInput" placeholder="Type a message..." onkeydown="if(event.key==='Enter')sendDoctorMsg()">
+                <button class="btn btn-primary" onclick="sendDoctorMsg()">Send</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DOCTOR SCHEDULE -->
+      <div id="doctor-schedule" class="page">
+        <div class="page-header"><h2>My Schedule</h2><p>Manage availability and leaves</p></div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header"><span class="card-title">March / April 2026</span></div>
+            <div class="card-body">
+              <div class="cal-grid">
+                <div class="cal-day-header">S</div><div class="cal-day-header">M</div><div class="cal-day-header">T</div><div class="cal-day-header">W</div><div class="cal-day-header">T</div><div class="cal-day-header">F</div><div class="cal-day-header">S</div>
+                <div class="cal-day empty"></div><div class="cal-day empty"></div><div class="cal-day empty"></div><div class="cal-day empty"></div><div class="cal-day empty"></div><div class="cal-day empty"></div><div class="cal-day">1</div>
+                <div class="cal-day">2</div><div class="cal-day has-event">3</div><div class="cal-day has-event">4</div><div class="cal-day has-event">5</div><div class="cal-day has-event">6</div><div class="cal-day has-event">7</div><div class="cal-day">8</div>
+                <div class="cal-day">9</div><div class="cal-day has-event">10</div><div class="cal-day has-event">11</div><div class="cal-day has-event">12</div><div class="cal-day has-event">13</div><div class="cal-day has-event">14</div><div class="cal-day">15</div>
+                <div class="cal-day">16</div><div class="cal-day has-event">17</div><div class="cal-day has-event">18</div><div class="cal-day has-event">19</div><div class="cal-day has-event">20</div><div class="cal-day has-event">21</div><div class="cal-day">22</div>
+                <div class="cal-day">23</div><div class="cal-day has-event">24</div><div class="cal-day has-event">25</div><div class="cal-day has-event">26</div><div class="cal-day has-event">27</div><div class="cal-day has-event">28</div><div class="cal-day">29</div>
+                <div class="cal-day today">30</div><div class="cal-day has-event">31</div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">Availability Settings</span></div>
+            <div class="card-body">
+              <div class="form-group"><label class="form-label">Working Days</label>
+                <div style="display:flex;gap:8px;flex-wrap:wrap">
+                  <span class="badge badge-blue" style="cursor:pointer;padding:6px 12px">Mon</span>
+                  <span class="badge badge-blue" style="cursor:pointer;padding:6px 12px">Tue</span>
+                  <span class="badge badge-blue" style="cursor:pointer;padding:6px 12px">Wed</span>
+                  <span class="badge badge-blue" style="cursor:pointer;padding:6px 12px">Thu</span>
+                  <span class="badge badge-blue" style="cursor:pointer;padding:6px 12px">Fri</span>
+                  <span class="badge badge-gray" style="cursor:pointer;padding:6px 12px">Sat</span>
+                  <span class="badge badge-gray" style="cursor:pointer;padding:6px 12px">Sun</span>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group"><label class="form-label">Start Time</label><input class="form-input" type="time" value="09:00"></div>
+                <div class="form-group"><label class="form-label">End Time</label><input class="form-input" type="time" value="17:00"></div>
+              </div>
+              <button class="btn btn-primary" onclick="showToast('Schedule updated!','success')">Save Schedule</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DOCTOR PROFILE -->
+      <div id="doctor-profile" class="page">
+        <div class="page-header"><h2>My Profile</h2></div>
+        <div class="card">
+          <div class="card-body">
+            <div style="display:flex;gap:24px;align-items:center;margin-bottom:24px">
+              <div class="avatar" style="width:80px;height:80px;background:#0066ff;color:#fff;font-size:28px">PN</div>
+              <div>
+                <div style="font-family:'Syne',sans-serif;font-size:22px;font-weight:800">Dr. Priya Nair</div>
+                <div style="color:var(--text3)">MBBS, MD Cardiology · 14 years experience</div>
+                <div style="margin-top:8px;display:flex;gap:8px">
+                  <span class="badge badge-blue">Cardiologist</span>
+                  <span class="badge badge-green">On Duty</span>
+                </div>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label class="form-label">Full Name</label><input class="form-input" value="Dr. Priya Nair"></div>
+              <div class="form-group"><label class="form-label">Email</label><input class="form-input" value="priya.nair@mediflow.com"></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label class="form-label">Phone</label><input class="form-input" value="+91 98765 00001"></div>
+              <div class="form-group"><label class="form-label">Room / Chamber</label><input class="form-input" value="Room 204, Cardiology Block"></div>
+            </div>
+            <button class="btn btn-primary" onclick="showToast('Profile updated!','success')">Update Profile</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== PATIENT APP ======================== -->
+<div id="app-patient" class="app app-patient">
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="app-logo">Medi<span>Flow</span></div>
+      <span class="role-badge" style="background:#d1fae5;color:#065f46;">Patient</span>
+    </div>
+    <div class="topbar-right">
+      <button class="notif-btn">🔔<span class="notif-dot"></span></button>
+      <div class="user-pill">
+        <div class="user-avatar" style="background:#00c5a3;">RK</div>
+        <span class="user-name">Rajesh Kumar</span>
+      </div>
+      <button class="back-btn" onclick="goHome()">← Exit</button>
+    </div>
+  </div>
+  <div class="main-layout">
+    <nav class="sidebar">
+      <div class="nav-section">My Health</div>
+      <div class="nav-item active" onclick="showPage('patient','dashboard',this)"><span class="nav-icon">🏠</span>Dashboard</div>
+      <div class="nav-item" onclick="showPage('patient','book',this)"><span class="nav-icon">📅</span>Book Appointment</div>
+      <div class="nav-item" onclick="showPage('patient','appointments',this)"><span class="nav-icon">🗓️</span>My Appointments</div>
+      <div class="nav-section">Records</div>
+      <div class="nav-item" onclick="showPage('patient','records',this)"><span class="nav-icon">📋</span>Medical History</div>
+      <div class="nav-item" onclick="showPage('patient','prescriptions',this)"><span class="nav-icon">💊</span>Prescriptions</div>
+      <div class="nav-item" onclick="showPage('patient','reports',this)"><span class="nav-icon">🔬</span>Lab Reports</div>
+      <div class="nav-section">Support</div>
+      <div class="nav-item" onclick="showPage('patient','messages',this)"><span class="nav-icon">💬</span>Message Doctor<span class="nav-badge">1</span></div>
+      <div class="nav-item" onclick="showPage('patient','emergency',this)"><span class="nav-icon">🚨</span>Emergency</div>
+      <div class="nav-section">Account</div>
+      <div class="nav-item" onclick="showPage('patient','profile',this)"><span class="nav-icon">👤</span>My Profile</div>
+    </nav>
+    <div class="content">
+      <!-- PATIENT DASHBOARD -->
+      <div id="patient-dashboard" class="page active">
+        <div class="page-header">
+          <h2>Hello, Rajesh 👋</h2>
+          <p>Here's your health summary for today</p>
+        </div>
+        <div class="alert alert-warning">⚠️ Your next appointment with <strong>Dr. Priya Nair</strong> is on <strong>6 April 2026 at 10:00 AM</strong></div>
+        <div class="stats-grid">
+          <div class="stat-card" style="--sc:rgba(0,197,163,0.1)">
+            <div class="stat-icon">🩺</div><div class="stat-label">Active Doctors</div><div class="stat-value">1</div>
+            <div class="stat-delta">Dr. Priya Nair</div>
+          </div>
+          <div class="stat-card" style="--sc:rgba(255,92,92,0.1)">
+            <div class="stat-icon">💊</div><div class="stat-label">Active Medicines</div><div class="stat-value">4</div>
+            <div class="stat-delta delta-up">All taken today</div>
+          </div>
+          <div class="stat-card" style="--sc:rgba(0,102,255,0.1)">
+            <div class="stat-icon">📅</div><div class="stat-label">Next Appointment</div><div class="stat-value">7 days</div>
+          </div>
+          <div class="stat-card" style="--sc:rgba(245,158,11,0.1)">
+            <div class="stat-icon">📋</div><div class="stat-label">Reports Pending</div><div class="stat-value">2</div>
+          </div>
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header"><span class="card-title">My Health Score</span></div>
+            <div class="card-body" style="text-align:center">
+              <div class="health-ring">
+                <svg width="100" height="100" viewBox="0 0 100 100">
+                  <circle cx="50" cy="50" r="40" fill="none" stroke="#e8eef5" stroke-width="12"/>
+                  <circle cx="50" cy="50" r="40" fill="none" stroke="#00c5a3" stroke-width="12" stroke-dasharray="188 63" stroke-linecap="round"/>
+                </svg>
+                <div class="health-score">
+                  <div class="health-score-val" style="color:#00c5a3">75</div>
+                  <div class="health-score-label">/ 100</div>
+                </div>
+              </div>
+              <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:16px;margin-bottom:6px">Good</div>
+              <div style="font-size:12px;color:var(--text2)">Follow doctor's advice to improve</div>
+              <div style="margin-top:20px;text-align:left">
+                <div style="margin-bottom:10px">
+                  <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>Blood Pressure</span><span style="color:#ff5c5c">High</span></div>
+                  <div class="progress-bar"><div class="progress-fill" style="width:85%;background:#ff5c5c"></div></div>
+                </div>
+                <div style="margin-bottom:10px">
+                  <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>Heart Rate</span><span style="color:#f59e0b">Moderate</span></div>
+                  <div class="progress-bar"><div class="progress-fill" style="width:70%;background:#f59e0b"></div></div>
+                </div>
+                <div>
+                  <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>Medication Adherence</span><span style="color:#00c5a3">Good</span></div>
+                  <div class="progress-bar"><div class="progress-fill" style="width:90%;background:#00c5a3"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">Today's Medication</span></div>
+            <div class="card-body">
+              <ul class="med-list">
+                <li class="med-item">
+                  <div class="med-dot" style="background:#00c5a3"></div>
+                  <div style="flex:1"><div style="font-weight:600">Lisinopril 10mg</div><div style="font-size:11px;color:var(--text3)">Once daily · Morning</div></div>
+                  <span class="badge badge-green">✓ Taken</span>
+                </li>
+                <li class="med-item">
+                  <div class="med-dot" style="background:#00c5a3"></div>
+                  <div style="flex:1"><div style="font-weight:600">Furosemide 40mg</div><div style="font-size:11px;color:var(--text3)">Once daily · Morning</div></div>
+                  <span class="badge badge-green">✓ Taken</span>
+                </li>
+                <li class="med-item">
+                  <div class="med-dot" style="background:#f59e0b"></div>
+                  <div style="flex:1"><div style="font-weight:600">Atenolol 25mg</div><div style="font-size:11px;color:var(--text3)">Once daily · Night</div></div>
+                  <button class="btn btn-sm btn-success" onclick="showToast('Medication marked as taken! ✓','success')">Mark Taken</button>
+                </li>
+                <li class="med-item">
+                  <div class="med-dot" style="background:#f59e0b"></div>
+                  <div style="flex:1"><div style="font-weight:600">Aspirin 75mg</div><div style="font-size:11px;color:var(--text3)">Once daily · After dinner</div></div>
+                  <button class="btn btn-sm btn-success" onclick="showToast('Medication marked as taken! ✓','success')">Mark Taken</button>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PATIENT BOOK APPOINTMENT -->
+      <div id="patient-book" class="page">
+        <div class="page-header"><h2>Book Appointment</h2><p>Schedule a visit with your preferred doctor</p></div>
+        <div class="card" style="max-width:640px">
+          <div class="card-body">
+            <div class="form-group">
+              <label class="form-label">Select Department</label>
+              <select class="form-select" id="deptSelect" onchange="updateDoctors()">
+                <option value="">-- Choose Department --</option>
+                <option>Cardiology</option>
+                <option>Neurology</option>
+                <option>Orthopedics</option>
+                <option>Pediatrics</option>
+                <option>General Medicine</option>
+                <option>Gynecology</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Select Doctor</label>
+              <select class="form-select" id="docSelect">
+                <option value="">-- Choose Doctor --</option>
+                <option>Dr. Priya Nair (Cardiologist)</option>
+                <option>Dr. Arjun Sharma (Neurologist)</option>
+                <option>Dr. Kavitha Rao (Orthopedician)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Appointment Type</label>
+              <select class="form-select">
+                <option>New Consultation</option>
+                <option>Follow-up</option>
+                <option>Emergency</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Preferred Date</label>
+              <input class="form-input" type="date" value="2026-04-06" min="2026-03-31">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Available Slots — April 6, 2026</label>
+              <div class="slot-grid">
+                <div class="slot taken">9:00 AM</div>
+                <div class="slot taken">9:30 AM</div>
+                <div class="slot" onclick="selectSlot(this)">10:00 AM</div>
+                <div class="slot" onclick="selectSlot(this)">10:30 AM</div>
+                <div class="slot selected" onclick="selectSlot(this)">11:00 AM</div>
+                <div class="slot taken">11:30 AM</div>
+                <div class="slot" onclick="selectSlot(this)">2:00 PM</div>
+                <div class="slot" onclick="selectSlot(this)">2:30 PM</div>
+                <div class="slot" onclick="selectSlot(this)">3:00 PM</div>
+                <div class="slot taken">3:30 PM</div>
+                <div class="slot" onclick="selectSlot(this)">4:00 PM</div>
+                <div class="slot" onclick="selectSlot(this)">4:30 PM</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Chief Complaint / Reason</label>
+              <textarea class="form-textarea" placeholder="Describe your symptoms or reason for visit..."></textarea>
+            </div>
+            <button class="btn btn-primary" style="width:100%;justify-content:center" onclick="bookAppointment()">✓ Confirm Appointment</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PATIENT APPOINTMENTS -->
+      <div id="patient-appointments" class="page">
+        <div class="page-header"><h2>My Appointments</h2></div>
+        <div class="tabs">
+          <div class="tab active" onclick="switchTab(this,'pappt-upcoming')">Upcoming</div>
+          <div class="tab" onclick="switchTab(this,'pappt-past')">Past</div>
+        </div>
+        <div id="pappt-upcoming">
+          <div class="card">
+            <div class="card-body" style="display:flex;flex-direction:column;gap:14px">
+              <div style="display:flex;gap:16px;padding:16px;border:1.5px solid var(--theme-color);border-radius:14px;background:rgba(0,197,163,0.04)">
+                <div style="background:var(--theme-color);color:#fff;padding:12px;border-radius:12px;text-align:center;min-width:60px">
+                  <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800">06</div>
+                  <div style="font-size:11px;opacity:0.8">APR</div>
+                </div>
+                <div style="flex:1">
+                  <div style="font-family:'Syne',sans-serif;font-weight:700;font-size:15px">Dr. Priya Nair</div>
+                  <div style="font-size:12px;color:var(--text3)">Cardiology · Follow-up · 10:00 AM · Room 204</div>
+                  <div style="margin-top:8px;display:flex;gap:8px">
+                    <span class="badge badge-blue">Confirmed</span>
+                    <button class="btn btn-sm btn-secondary" onclick="showToast('Appointment cancelled','error')">Cancel</button>
+                    <button class="btn btn-sm btn-secondary" onclick="showToast('Reminder set!')">🔔 Remind Me</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="pappt-past" style="display:none">
+          <div class="card">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>Date</th><th>Doctor</th><th>Department</th><th>Type</th><th>Status</th><th>Action</th></tr></thead>
+                <tbody>
+                  <tr><td>30 Mar 2026</td><td>Dr. Priya Nair</td><td>Cardiology</td><td>Emergency</td><td><span class="badge badge-green">Completed</span></td><td><button class="btn btn-sm btn-secondary" onclick="showToast('Summary opened')">Summary</button></td></tr>
+                  <tr><td>15 Mar 2026</td><td>Dr. Priya Nair</td><td>Cardiology</td><td>Follow-up</td><td><span class="badge badge-green">Completed</span></td><td><button class="btn btn-sm btn-secondary" onclick="showToast('Summary opened')">Summary</button></td></tr>
+                  <tr><td>28 Feb 2026</td><td>Dr. Priya Nair</td><td>Cardiology</td><td>New Consultation</td><td><span class="badge badge-green">Completed</span></td><td><button class="btn btn-sm btn-secondary" onclick="showToast('Summary opened')">Summary</button></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PATIENT RECORDS -->
+      <div id="patient-records" class="page">
+        <div class="page-header"><h2>Medical History</h2><p>Your complete health timeline</p></div>
+        <div class="card" style="margin-bottom:20px">
+          <div class="card-header"><span class="card-title">Patient Info</span></div>
+          <div class="card-body">
+            <div class="grid-3">
+              <div><div class="form-label">Blood Group</div><div style="font-weight:700;color:#ff5c5c;font-size:16px">B+</div></div>
+              <div><div class="form-label">Height</div><div style="font-weight:700">172 cm</div></div>
+              <div><div class="form-label">Weight</div><div style="font-weight:700">82 kg</div></div>
+              <div><div class="form-label">Allergies</div><div style="font-weight:600;color:#ff5c5c">Penicillin</div></div>
+              <div><div class="form-label">Chronic Conditions</div><div style="font-weight:600">Hypertension, HF</div></div>
+              <div><div class="form-label">Smoker</div><div style="font-weight:600">No (ex-smoker)</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><span class="card-title">Health Timeline</span></div>
+          <div class="card-body">
+            <ul class="timeline">
+              <li class="timeline-item"><div class="timeline-date">30 Mar 2026 — Dr. Priya Nair, Cardiology</div><div class="timeline-title">ICU Admission — BP Crisis</div><div class="timeline-body">BP 160/100, SpO₂ 94%. Admitted to ICU. Medication adjusted. Furosemide added to regimen.</div></li>
+              <li class="timeline-item"><div class="timeline-date">15 Mar 2026 — Dr. Priya Nair, Cardiology</div><div class="timeline-title">Follow-up Consultation</div><div class="timeline-body">BP 138/85, improved. Medications continued. Diet counselling given.</div></li>
+              <li class="timeline-item"><div class="timeline-date">28 Feb 2026 — Dr. Priya Nair, Cardiology</div><div class="timeline-title">Diagnosis: Hypertensive Heart Failure</div><div class="timeline-body">Started Lisinopril 5mg + Atenolol 25mg. Referred for Echo 2D and Holter monitoring.</div></li>
+              <li class="timeline-item"><div class="timeline-date">20 Jan 2026 — Dr. Ravi General Medicine</div><div class="timeline-title">Routine Check-up — BP Elevated</div><div class="timeline-body">BP 150/95. Referred to Cardiology for evaluation.</div></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- PATIENT PRESCRIPTIONS -->
+      <div id="patient-prescriptions" class="page">
+        <div class="page-header"><h2>My Prescriptions</h2></div>
+        <div class="rx-card">
+          <div class="rx-header">
+            <div>
+              <div class="rx-title">Prescription #RX-892</div>
+              <div style="font-size:12px;color:var(--text3)">Dr. Priya Nair · Cardiology · 30 Mar 2026</div>
+              <div style="font-size:12px;color:var(--text3);margin-top:2px">Diagnosis: Hypertensive Heart Failure</div>
+            </div>
+            <div style="display:flex;gap:8px;flex-direction:column;align-items:flex-end">
+              <span class="badge badge-green">Active</span>
+              <button class="btn btn-sm btn-secondary" onclick="showToast('Prescription downloaded!')">📥 Download</button>
+            </div>
+          </div>
+          <ul class="med-list">
+            <li class="med-item"><div class="med-dot" style="background:#00c5a3"></div><div><div style="font-weight:600">Lisinopril 10mg</div><div style="font-size:11px;color:var(--text3)">1 tablet · Once daily · Morning · 30 days</div></div></li>
+            <li class="med-item"><div class="med-dot" style="background:#00c5a3"></div><div><div style="font-weight:600">Atenolol 25mg</div><div style="font-size:11px;color:var(--text3)">1 tablet · Once daily · Night · 30 days</div></div></li>
+            <li class="med-item"><div class="med-dot" style="background:#00c5a3"></div><div><div style="font-weight:600">Furosemide 40mg</div><div style="font-size:11px;color:var(--text3)">1 tablet · Once daily · Morning · 14 days</div></div></li>
+            <li class="med-item"><div class="med-dot" style="background:#00c5a3"></div><div><div style="font-weight:600">Aspirin 75mg</div><div style="font-size:11px;color:var(--text3)">1 tablet · Once daily · After food · 30 days</div></div></li>
+          </ul>
+          <div style="background:#f0fdf4;border-radius:8px;padding:12px;margin-top:12px;font-size:12px;color:#065f46">
+            <strong>Doctor's Instructions:</strong> Low sodium diet. Restrict fluids to 1.5L/day. Monitor BP daily. Return if BP > 160/100 or breathlessness worsens.
+          </div>
+        </div>
+      </div>
+
+      <!-- PATIENT LAB REPORTS -->
+      <div id="patient-reports" class="page">
+        <div class="page-header"><h2>Lab Reports</h2></div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Report</th><th>Date</th><th>Lab</th><th>Result</th><th>Reviewed By</th><th>Action</th></tr></thead>
+              <tbody>
+                <tr><td><div style="font-weight:600">ECG — 12 Lead</div></td><td>30 Mar 2026</td><td>Cardiology Lab</td><td><span class="badge badge-red">Abnormal — ST changes</span></td><td>Dr. Priya Nair</td><td><button class="btn btn-sm btn-primary" onclick="showToast('Report opened')">View</button></td></tr>
+                <tr><td><div style="font-weight:600">CBC Blood Test</div></td><td>29 Mar 2026</td><td>Pathology</td><td><span class="badge badge-yellow">Mild Anemia</span></td><td>Pending</td><td><button class="btn btn-sm btn-primary" onclick="showToast('Report opened')">View</button></td></tr>
+                <tr><td><div style="font-weight:600">Echo 2D</div></td><td>15 Feb 2026</td><td>Radiology</td><td><span class="badge badge-yellow">EF 48%</span></td><td>Dr. Priya Nair</td><td><button class="btn btn-sm btn-primary" onclick="showToast('Report opened')">View</button></td></tr>
+                <tr><td><div style="font-weight:600">Kidney Function Test</div></td><td>10 Feb 2026</td><td>Pathology</td><td><span class="badge badge-green">Normal</span></td><td>Dr. Priya Nair</td><td><button class="btn btn-sm btn-primary" onclick="showToast('Report opened')">View</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- PATIENT MESSAGES -->
+      <div id="patient-messages" class="page">
+        <div class="page-header"><h2>Message My Doctor</h2></div>
+        <div class="card">
+          <div class="card-header">
+            <div style="display:flex;gap:10px;align-items:center">
+              <div class="avatar" style="background:#0066ff;color:#fff">PN</div>
+              <div><div style="font-weight:700">Dr. Priya Nair</div><div style="font-size:11px;color:#00c5a3">● Available</div></div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="chat-box" id="patientChatBox">
+              <div class="msg msg-self"><div class="msg-bubble" style="background:#00c5a3">Doctor, my BP reading at home was 150/95 this morning. Should I be concerned?</div><div class="msg-meta">You · 10:15 AM</div></div>
+              <div class="msg msg-other"><div class="msg-bubble">Yes, that's elevated. Please take your Lisinopril immediately and rest. Avoid salt in meals today. Come in tomorrow morning for a check.</div><div class="msg-meta">Dr. Priya Nair · 10:18 AM</div></div>
+              <div class="msg msg-self"><div class="msg-bubble" style="background:#00c5a3">Doctor, my BP is very high today — 160/100. I'm feeling dizzy. Should I come to emergency?</div><div class="msg-meta">You · 10:22 AM</div></div>
+            </div>
+            <div class="chat-input-row">
+              <input class="form-input chat-input" id="patientChatInput" placeholder="Type your message..." onkeydown="if(event.key==='Enter')sendPatientMsg()">
+              <button class="btn btn-primary" style="background:#00c5a3" onclick="sendPatientMsg()">Send</button>
+            </div>
+            <div class="alert alert-info" style="margin-top:12px;font-size:12px">💡 For emergencies, use the Emergency tab or call 108</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PATIENT EMERGENCY -->
+      <div id="patient-emergency" class="page">
+        <div class="page-header"><h2>Emergency Assistance</h2></div>
+        <div class="alert alert-danger">🚨 Use this only for genuine medical emergencies</div>
+        <div class="grid-2">
+          <div class="card" style="border-color:#ff5c5c">
+            <div class="card-body" style="text-align:center;padding:40px">
+              <div style="font-size:60px;margin-bottom:16px">🚑</div>
+              <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800;margin-bottom:8px">Call Ambulance</div>
+              <div style="font-size:13px;color:var(--text2);margin-bottom:24px">Emergency medical services will be dispatched to your location immediately</div>
+              <button class="btn btn-danger" style="width:100%;justify-content:center;font-size:16px;padding:16px" onclick="triggerEmergency()">📞 Call 108 — EMERGENCY</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><span class="card-title">Hospital Emergency Contacts</span></div>
+            <div class="card-body">
+              <div style="display:flex;flex-direction:column;gap:14px">
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--surface2);border-radius:10px">
+                  <div><div style="font-weight:600">Emergency OPD</div><div style="font-size:12px;color:var(--text3)">24/7 Available</div></div>
+                  <button class="btn btn-danger btn-sm" onclick="showToast('Calling Emergency OPD...')">📞 Call</button>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--surface2);border-radius:10px">
+                  <div><div style="font-weight:600">Cardiac Emergency</div><div style="font-size:12px;color:var(--text3)">+91 044-28001235</div></div>
+                  <button class="btn btn-danger btn-sm" onclick="showToast('Calling Cardiac Emergency...')">📞 Call</button>
+                </div>
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;background:var(--surface2);border-radius:10px">
+                  <div><div style="font-weight:600">My Doctor (Dr. Priya Nair)</div><div style="font-size:12px;color:var(--text3)">+91 98765 00001</div></div>
+                  <button class="btn btn-sm btn-primary" style="background:#00c5a3" onclick="showToast('Calling Dr. Priya Nair...')">📞 Call</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="margin-top:20px">
+          <div class="card-header"><span class="card-title">Quick First Aid Guides</span></div>
+          <div class="card-body" style="display:flex;gap:12px;flex-wrap:wrap">
+            <button class="btn btn-secondary" onclick="showToast('Opening CPR Guide')">❤️ CPR Guide</button>
+            <button class="btn btn-secondary" onclick="showToast('Opening Choking Guide')">🫁 Choking</button>
+            <button class="btn btn-secondary" onclick="showToast('Opening Stroke Guide')">🧠 Stroke Signs</button>
+            <button class="btn btn-secondary" onclick="showToast('Opening BP Guide')">💉 BP Crisis</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PATIENT PROFILE -->
+      <div id="patient-profile" class="page">
+        <div class="page-header"><h2>My Profile</h2></div>
+        <div class="card" style="max-width:640px">
+          <div class="card-body">
+            <div style="display:flex;gap:20px;align-items:center;margin-bottom:24px">
+              <div class="avatar" style="width:72px;height:72px;background:#00c5a3;color:#fff;font-size:24px">RK</div>
+              <div>
+                <div style="font-family:'Syne',sans-serif;font-size:20px;font-weight:800">Rajesh Kumar</div>
+                <div style="color:var(--text3)">Patient ID: #P-0421</div>
+                <span class="badge badge-red" style="margin-top:6px">Blood Group: B+</span>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label class="form-label">Full Name</label><input class="form-input" value="Rajesh Kumar"></div>
+              <div class="form-group"><label class="form-label">Date of Birth</label><input class="form-input" type="date" value="1972-06-12"></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label class="form-label">Phone</label><input class="form-input" value="+91 98765 43210"></div>
+              <div class="form-group"><label class="form-label">Email</label><input class="form-input" value="rajesh@email.com"></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label class="form-label">Emergency Contact</label><input class="form-input" value="Sunita Kumar (Wife)"></div>
+              <div class="form-group"><label class="form-label">Emergency Phone</label><input class="form-input" value="+91 98765 43211"></div>
+            </div>
+            <div class="form-group"><label class="form-label">Address</label><textarea class="form-textarea" style="min-height:60px">42, Nungambakkam High Road, Chennai 600034</textarea></div>
+            <button class="btn btn-primary" style="background:#00c5a3" onclick="showToast('Profile updated!','success')">Save Profile</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================== MODALS ======================== -->
+<div class="modal-overlay" id="addPatientModal">
+  <div class="modal">
+    <div class="modal-header"><span class="modal-title">Add New Patient</span><button class="modal-close" onclick="closeModal('addPatientModal')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-row"><div class="form-group"><label class="form-label">First Name</label><input class="form-input" placeholder="First name"></div><div class="form-group"><label class="form-label">Last Name</label><input class="form-input" placeholder="Last name"></div></div>
+      <div class="form-row"><div class="form-group"><label class="form-label">Date of Birth</label><input class="form-input" type="date"></div><div class="form-group"><label class="form-label">Gender</label><select class="form-select"><option>Male</option><option>Female</option><option>Other</option></select></div></div>
+      <div class="form-row"><div class="form-group"><label class="form-label">Phone</label><input class="form-input" placeholder="+91 XXXXX XXXXX"></div><div class="form-group"><label class="form-label">Blood Group</label><select class="form-select"><option>A+</option><option>A-</option><option>B+</option><option>B-</option><option>AB+</option><option>AB-</option><option>O+</option><option>O-</option></select></div></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('addPatientModal')">Cancel</button><button class="btn btn-primary" onclick="closeModal('addPatientModal');showToast('Patient added successfully!','success')">Add Patient</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="addDoctorModal">
+  <div class="modal">
+    <div class="modal-header"><span class="modal-title">Add New Doctor</span><button class="modal-close" onclick="closeModal('addDoctorModal')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-row"><div class="form-group"><label class="form-label">Full Name</label><input class="form-input" placeholder="Dr. Full Name"></div><div class="form-group"><label class="form-label">Specialization</label><input class="form-input" placeholder="e.g. Cardiologist"></div></div>
+      <div class="form-row"><div class="form-group"><label class="form-label">Department</label><select class="form-select"><option>Cardiology</option><option>Neurology</option><option>Orthopedics</option><option>Pediatrics</option></select></div><div class="form-group"><label class="form-label">Experience (years)</label><input class="form-input" type="number" placeholder="10"></div></div>
+      <div class="form-group"><label class="form-label">Qualifications</label><input class="form-input" placeholder="MBBS, MD..."></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('addDoctorModal')">Cancel</button><button class="btn btn-primary" onclick="closeModal('addDoctorModal');showToast('Doctor added!','success')">Add Doctor</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="consultModal">
+  <div class="modal">
+    <div class="modal-header"><span class="modal-title">Consultation — Mohit Gupta</span><button class="modal-close" onclick="closeModal('consultModal')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">Chief Complaint</label><input class="form-input" value="Irregular heartbeat, palpitations for 2 weeks"></div>
+      <div class="form-group"><label class="form-label">Diagnosis</label><input class="form-input" placeholder="Enter diagnosis..."></div>
+      <div class="form-group"><label class="form-label">Clinical Notes</label><textarea class="form-textarea" placeholder="Examination findings, treatment plan..."></textarea></div>
+      <div class="form-group"><label class="form-label">Follow-up Date</label><input class="form-input" type="date"></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('consultModal')">Cancel</button><button class="btn btn-primary" onclick="closeModal('consultModal');showPage('doctor','prescriptions',null);showToast('Consultation saved! Writing prescription...','success')">Save & Prescribe</button></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="prescribeModal">
+  <div class="modal">
+    <div class="modal-header"><span class="modal-title">New Prescription</span><button class="modal-close" onclick="closeModal('prescribeModal')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">Patient</label><select class="form-select"><option>Rajesh Kumar</option><option>Mohit Gupta</option><option>Deepa Singh</option></select></div>
+      <div class="form-group"><label class="form-label">Diagnosis</label><input class="form-input" placeholder="Diagnosis"></div>
+      <div id="medList">
+        <label class="form-label">Medications</label>
+        <div class="form-row" style="margin-bottom:10px"><input class="form-input" placeholder="Medicine name"><input class="form-input" placeholder="Dosage & Frequency"></div>
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="showToast('Row added')">+ Add Medicine</button>
+      <div class="form-group" style="margin-top:14px"><label class="form-label">Special Instructions</label><textarea class="form-textarea" placeholder="Diet, lifestyle, warnings..."></textarea></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('prescribeModal')">Cancel</button><button class="btn btn-primary" onclick="closeModal('prescribeModal');showToast('Prescription issued!','success')">Issue Prescription</button></div>
+  </div>
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// ==================== CORE NAVIGATION ====================
+function launchApp(role) {
+  document.getElementById('landing').style.display = 'none';
+  document.querySelectorAll('.app').forEach(a => a.classList.remove('active'));
+  document.getElementById('app-' + role).classList.add('active');
+}
+
+function goHome() {
+  document.querySelectorAll('.app').forEach(a => a.classList.remove('active'));
+  document.getElementById('landing').style.display = 'flex';
+}
+
+function showPage(app, page, navEl) {
+  const appEl = document.getElementById('app-' + app);
+  appEl.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const target = document.getElementById(app + '-' + page);
+  if (target) target.classList.add('active');
+  appEl.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (navEl) navEl.classList.add('active');
+}
+
+function switchTab(el, targetId) {
+  const parent = el.parentElement;
+  parent.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  const container = parent.nextElementSibling;
+  if (!container) return;
+  container.parentElement.querySelectorAll('[id]').forEach(d => {
+    if ([...parent.querySelectorAll('.tab')].some(t => t.getAttribute('onclick') && t.getAttribute('onclick').includes(d.id))) {
+      d.style.display = 'none';
+    }
+  });
+  const tgt = document.getElementById(targetId);
+  if (tgt) tgt.style.display = '';
+}
+
+// ==================== MODALS ====================
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+// ==================== TOAST ====================
+function showToast(msg, type) {
+  const c = document.getElementById('toastContainer');
+  const t = document.createElement('div');
+  t.className = 'toast' + (type ? ' toast-' + type : '');
+  t.innerHTML = (type === 'success' ? '✅ ' : type === 'error' ? '❌ ' : 'ℹ️ ') + msg;
+  c.appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'translateX(100%)'; setTimeout(() => t.remove(), 400); }, 3000);
+}
+
+// ==================== SLOT SELECT ====================
+function selectSlot(el) {
+  el.closest('.slot-grid').querySelectorAll('.slot').forEach(s => s.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+// ==================== BOOKING ====================
+function bookAppointment() {
+  showToast('Appointment confirmed! Confirmation sent to your phone.', 'success');
+  setTimeout(() => showPage('patient', 'appointments', null), 800);
+}
+
+// ==================== CHAT ====================
+function sendDoctorMsg() {
+  const input = document.getElementById('chatInput');
+  const val = input.value.trim();
+  if (!val) return;
+  const box = document.getElementById('chatBox');
+  const msg = document.createElement('div');
+  msg.className = 'msg msg-self';
+  msg.innerHTML = `<div class="msg-bubble">${val}</div><div class="msg-meta">You · Just now</div>`;
+  box.appendChild(msg);
+  box.scrollTop = box.scrollHeight;
+  input.value = '';
+  setTimeout(() => {
+    const reply = document.createElement('div');
+    reply.className = 'msg msg-other';
+    reply.innerHTML = `<div class="msg-bubble">Thank you for the update. Please come to the hospital immediately — I'll arrange for urgent evaluation.</div><div class="msg-meta">${document.getElementById('chatName').textContent} · Just now</div>`;
+    box.appendChild(reply);
+    box.scrollTop = box.scrollHeight;
+  }, 1500);
+}
+
+function sendPatientMsg() {
+  const input = document.getElementById('patientChatInput');
+  const val = input.value.trim();
+  if (!val) return;
+  const box = document.getElementById('patientChatBox');
+  const msg = document.createElement('div');
+  msg.className = 'msg msg-self';
+  msg.innerHTML = `<div class="msg-bubble" style="background:#00c5a3">${val}</div><div class="msg-meta">You · Just now</div>`;
+  box.appendChild(msg);
+  box.scrollTop = box.scrollHeight;
+  input.value = '';
+  setTimeout(() => {
+    const reply = document.createElement('div');
+    reply.className = 'msg msg-other';
+    reply.innerHTML = `<div class="msg-bubble">Message received. I'll review and respond shortly. If urgent, please call emergency line directly.</div><div class="msg-meta">Dr. Priya Nair · Just now</div>`;
+    box.appendChild(reply);
+    box.scrollTop = box.scrollHeight;
+  }, 1500);
+}
+
+function selectChat(name, initials) {
+  document.getElementById('chatName').textContent = name;
+  document.getElementById('chatAvatar').textContent = initials;
+}
+
+// ==================== MISC ====================
+function showPatient() {
+  document.getElementById('patientListView').style.display = 'none';
+  document.getElementById('patientDetailView').style.display = 'block';
+}
+
+function triggerEmergency() {
+  showToast('🚨 Emergency services alerted! Ambulance dispatched. ETA: 8 minutes', 'error');
+}
+
+function updateDoctors() {
+  const dept = document.getElementById('deptSelect').value;
+  const docMap = {
+    'Cardiology': ['Dr. Priya Nair (Cardiologist)'],
+    'Neurology': ['Dr. Arjun Sharma (Neurologist)'],
+    'Orthopedics': ['D
