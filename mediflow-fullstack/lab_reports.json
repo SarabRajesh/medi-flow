@@ -1,0 +1,66 @@
+{
+  "description": "MediFlow Sample Lab Reports",
+  "reportStatuses": ["pending", "normal", "abnormal", "critical"],
+  "reports": [
+    {
+      "patient_email": "rajesh@gmail.com",
+      "doctor_email": "priya@mediflow.com",
+      "test_name": "ECG — 12 Lead",
+      "test_date": "2026-03-30",
+      "result": "ST elevation in V1-V4, LVH changes. Q waves in inferior leads.",
+      "status": "abnormal",
+      "lab_name": "Cardiology Lab",
+      "uploaded_by": "Lab Tech Ravi"
+    },
+    {
+      "patient_email": "rajesh@gmail.com",
+      "doctor_email": "priya@mediflow.com",
+      "test_name": "CBC Blood Test",
+      "test_date": "2026-03-29",
+      "result": "Hb: 10.2 g/dL (mild anemia), WBC: 8400/μL, Platelets: 220000/μL",
+      "status": "abnormal",
+      "lab_name": "Pathology Department",
+      "uploaded_by": "Dr. Priya Nair"
+    },
+    {
+      "patient_email": "rajesh@gmail.com",
+      "doctor_email": "priya@mediflow.com",
+      "test_name": "Echo 2D",
+      "test_date": "2026-02-15",
+      "result": "EF 48%, mild LV dysfunction, mild MR, no pericardial effusion.",
+      "status": "abnormal",
+      "lab_name": "Radiology Department",
+      "uploaded_by": "Dr. Priya Nair"
+    },
+    {
+      "patient_email": "rajesh@gmail.com",
+      "doctor_email": "priya@mediflow.com",
+      "test_name": "Kidney Function Test",
+      "test_date": "2026-02-10",
+      "result": "Creatinine: 1.1 mg/dL, BUN: 18 mg/dL, eGFR: 72 — all within normal limits.",
+      "status": "normal",
+      "lab_name": "Pathology Department",
+      "uploaded_by": "Dr. Priya Nair"
+    },
+    {
+      "patient_email": "vikram@gmail.com",
+      "doctor_email": "kavitha@mediflow.com",
+      "test_name": "Pre-Op X-Ray Knee (Bilateral)",
+      "test_date": "2026-03-01",
+      "result": "Severe osteoarthritis Grade IV bilateral knees. Joint space narrowing, osteophyte formation.",
+      "status": "abnormal",
+      "lab_name": "Radiology Department",
+      "uploaded_by": "Dr. Kavitha Rao"
+    },
+    {
+      "patient_email": "sita@gmail.com",
+      "doctor_email": "arjun@mediflow.com",
+      "test_name": "MRI Brain",
+      "test_date": "2026-03-18",
+      "result": "No structural abnormality. No space-occupying lesion. White matter changes consistent with migraine.",
+      "status": "normal",
+      "lab_name": "Radiology Department",
+      "uploaded_by": "Dr. Arjun Sharma"
+    }
+  ]
+}

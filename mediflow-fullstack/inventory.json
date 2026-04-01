@@ -1,0 +1,114 @@
+{
+  "description": "MediFlow Hospital Inventory / Medical Supplies",
+  "categories": ["Medicine", "Consumable", "Equipment"],
+  "items": [
+    {
+      "item_name": "Paracetamol 500mg",
+      "category": "Medicine",
+      "quantity": 8420,
+      "unit": "tablets",
+      "threshold": 1000,
+      "supplier": "MedPharma Ltd",
+      "status": "in_stock"
+    },
+    {
+      "item_name": "Surgical Gloves (Medium)",
+      "category": "Consumable",
+      "quantity": 450,
+      "unit": "boxes",
+      "threshold": 100,
+      "supplier": "SafeGuard Co",
+      "status": "in_stock"
+    },
+    {
+      "item_name": "IV Cannula 18G",
+      "category": "Consumable",
+      "quantity": 82,
+      "unit": "units",
+      "threshold": 100,
+      "supplier": "MedSupply Inc",
+      "status": "low_stock"
+    },
+    {
+      "item_name": "Morphine Injection 10mg/mL",
+      "category": "Medicine",
+      "quantity": 35,
+      "unit": "vials",
+      "threshold": 50,
+      "supplier": "PharmaDirect",
+      "status": "critical"
+    },
+    {
+      "item_name": "ECG Electrodes",
+      "category": "Equipment",
+      "quantity": 1200,
+      "unit": "units",
+      "threshold": 300,
+      "supplier": "CardioTech",
+      "status": "in_stock"
+    },
+    {
+      "item_name": "Syringes 5mL",
+      "category": "Consumable",
+      "quantity": 3400,
+      "unit": "units",
+      "threshold": 500,
+      "supplier": "MedSupply Inc",
+      "status": "in_stock"
+    },
+    {
+      "item_name": "Insulin Glargine 100IU/mL",
+      "category": "Medicine",
+      "quantity": 210,
+      "unit": "vials",
+      "threshold": 50,
+      "supplier": "NovaPharma",
+      "status": "in_stock"
+    },
+    {
+      "item_name": "Oxygen Cylinder (Large)",
+      "category": "Equipment",
+      "quantity": 28,
+      "unit": "cylinders",
+      "threshold": 10,
+      "supplier": "GasMed India",
+      "status": "in_stock"
+    },
+    {
+      "item_name": "Surgical Masks N95",
+      "category": "Consumable",
+      "quantity": 1500,
+      "unit": "units",
+      "threshold": 200,
+      "supplier": "SafeGuard Co",
+      "status": "in_stock"
+    },
+    {
+      "item_name": "Ringer's Lactate 500mL",
+      "category": "Medicine",
+      "quantity": 320,
+      "unit": "bottles",
+      "threshold": 100,
+      "supplier": "BaxterIndia",
+      "status": "in_stock"
+    },
+    {
+      "item_name": "Foley Catheter 16Fr",
+      "category": "Consumable",
+      "quantity": 60,
+      "unit": "units",
+      "threshold": 80,
+      "supplier": "MedSupply Inc",
+      "status": "low_stock"
+    },
+    {
+      "item_name": "Blood Pressure Monitor (Digital)",
+      "category": "Equipment",
+      "quantity": 22,
+      "unit": "units",
+      "threshold": 5,
+      "supplier": "OmronMedical",
+      "status": "in_stock"
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "description": "MediFlow Sample Appointments Data",
+  "appointmentTypes": ["consultation", "follow-up", "emergency", "post-op", "check-up"],
+  "appointmentStatuses": ["scheduled", "waiting", "in-progress", "completed", "cancelled"],
+  "timeSlots": [
+    "09:00","09:30","10:00","10:30","11:00","11:30",
+    "14:00","14:30","15:00","15:30","16:00","16:30"
+  ],
+  "appointments": [
+    {
+      "patient_email": "rajesh@gmail.com",
+      "doctor_email": "priya@mediflow.com",
+      "appointment_date": "2026-03-30",
+      "appointment_time": "10:00",
+      "type": "follow-up",
+      "status": "completed",
+      "chief_complaint": "Chest pain recurring",
+      "room": "Room 204",
+      "notes": "BP 142/90. Furosemide added. Advised bed rest."
+    },
+    {
+      "patient_email": "anita@gmail.com",
+      "doctor_email": "suresh@mediflow.com",
+      "appointment_date": "2026-03-30",
+      "appointment_time": "10:30",
+      "type": "check-up",
+      "status": "completed",
+      "chief_complaint": "Routine antenatal check",
+      "room": "Room 202",
+      "notes": "28 weeks gestation. All vitals normal."
+    },
+    {
+      "patient_email": "sita@gmail.com",
+      "doctor_email": "arjun@mediflow.com",
+      "appointment_date": "2026-03-31",
+      "appointment_time": "11:00",
+      "type": "consultation",
+      "status": "scheduled",
+      "chief_complaint": "Persistent headache for 2 weeks",
+      "room": "Room 301"
+    },
+    {
+      "patient_email": "vikram@gmail.com",
+      "doctor_email": "kavitha@mediflow.com",
+      "appointment_date": "2026-04-02",
+      "appointment_time": "09:30",
+      "type": "post-op",
+      "status": "scheduled",
+      "chief_complaint": "Knee replacement follow-up",
+      "room": "Room 105"
+    },
+    {
+      "patient_email": "rajesh@gmail.com",
+      "doctor_email": "priya@mediflow.com",
+      "appointment_date": "2026-04-06",
+      "appointment_time": "10:00",
+      "type": "follow-up",
+      "status": "scheduled",
+      "chief_complaint": "BP monitoring + ECG review",
+      "room": "Room 204"
+    },
+    {
+      "patient_email": "anita@gmail.com",
+      "doctor_email": "suresh@mediflow.com",
+      "appointment_date": "2026-04-10",
+      "appointment_time": "11:30",
+      "type": "consultation",
+      "status": "scheduled",
+      "chief_complaint": "Monthly OB visit",
+      "room": "Room 202"
+    }
+  ]
+}

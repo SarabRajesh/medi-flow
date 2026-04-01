@@ -1,0 +1,476 @@
+{
+  "info": {
+    "name": "MediFlow Hospital API",
+    "description": "Complete API collection for MediFlow Hospital Management System",
+    "version": "1.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl",      "value": "http://localhost:3000/api" },
+    { "key": "adminToken",   "value": "" },
+    { "key": "doctorToken",  "value": "" },
+    { "key": "patientToken", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login — Admin",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/login",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"admin@mediflow.com\",\n  \"password\": \"admin123\"\n}" }
+          }
+        },
+        {
+          "name": "Login — Doctor (Priya Nair)",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/login",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"priya@mediflow.com\",\n  \"password\": \"doctor123\"\n}" }
+          }
+        },
+        {
+          "name": "Login — Patient (Rajesh)",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/login",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"email\": \"rajesh@gmail.com\",\n  \"password\": \"patient123\"\n}" }
+          }
+        },
+        {
+          "name": "Register — New Patient",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/auth/register",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Test Patient\",\n  \"email\": \"test@gmail.com\",\n  \"password\": \"test1234\",\n  \"phone\": \"+91 99999-00000\",\n  \"role\": \"patient\",\n  \"dob\": \"1990-01-01\",\n  \"gender\": \"male\",\n  \"blood_group\": \"O+\"\n}" }
+          }
+        },
+        {
+          "name": "Get My Profile",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/auth/me",
+            "header": [{ "key": "Authorization", "value": "Bearer {{patientToken}}" }]
+          }
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/auth/profile",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{patientToken}}" },
+              { "key": "Content-Type",  "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"name\": \"Rajesh Kumar Updated\",\n  \"phone\": \"+91 98765-43210\",\n  \"blood_group\": \"B+\",\n  \"allergies\": \"Penicillin\",\n  \"address\": \"42, Nungambakkam High Road, Chennai\"\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "item": [
+        {
+          "name": "Admin Dashboard Stats",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/dashboard/admin",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }]
+          }
+        },
+        {
+          "name": "Doctor Dashboard Stats",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/dashboard/doctor",
+            "header": [{ "key": "Authorization", "value": "Bearer {{doctorToken}}" }]
+          }
+        },
+        {
+          "name": "Patient Dashboard Stats",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/dashboard/patient",
+            "header": [{ "key": "Authorization", "value": "Bearer {{patientToken}}" }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Appointments",
+      "item": [
+        {
+          "name": "Get All Appointments (Admin)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/appointments",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }]
+          }
+        },
+        {
+          "name": "Get Today's Appointments",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/appointments/today",
+            "header": [{ "key": "Authorization", "value": "Bearer {{doctorToken}}" }]
+          }
+        },
+        {
+          "name": "Get My Appointments (Patient)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/appointments",
+            "header": [{ "key": "Authorization", "value": "Bearer {{patientToken}}" }]
+          }
+        },
+        {
+          "name": "Get Available Slots",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/appointments/slots/:doctorId/:date",
+              "variable": [
+                { "key": "doctorId", "value": "REPLACE_WITH_DOCTOR_ID" },
+                { "key": "date",     "value": "2026-04-06" }
+              ]
+            },
+            "header": [{ "key": "Authorization", "value": "Bearer {{patientToken}}" }]
+          }
+        },
+        {
+          "name": "Book Appointment",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/appointments",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{patientToken}}" },
+              { "key": "Content-Type",  "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"doctor_id\": \"REPLACE_WITH_DOCTOR_ID\",\n  \"appointment_date\": \"2026-04-08\",\n  \"appointment_time\": \"10:00\",\n  \"type\": \"consultation\",\n  \"chief_complaint\": \"Regular check-up\"\n}" }
+          }
+        },
+        {
+          "name": "Update Appointment Status",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/appointments/REPLACE_WITH_APPT_ID",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{doctorToken}}" },
+              { "key": "Content-Type",  "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"completed\",\n  \"notes\": \"Patient reviewed. Vitals stable. Continue current medications.\"\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Patients",
+      "item": [
+        {
+          "name": "Get All Patients",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/patients",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }]
+          }
+        },
+        {
+          "name": "Search Patients",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/patients?search=rajesh",
+              "query": [{ "key": "search", "value": "rajesh" }]
+            },
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }]
+          }
+        },
+        {
+          "name": "Get Patient Vitals",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/patients/REPLACE_WITH_PATIENT_ID/vitals",
+            "header": [{ "key": "Authorization", "value": "Bearer {{doctorToken}}" }]
+          }
+        },
+        {
+          "name": "Add Vitals",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/patients/REPLACE_WITH_PATIENT_ID/vitals",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{doctorToken}}" },
+              { "key": "Content-Type",  "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"bp_systolic\": 130,\n  \"bp_diastolic\": 85,\n  \"heart_rate\": 78,\n  \"temperature\": 36.7,\n  \"spo2\": 98,\n  \"weight_kg\": 82,\n  \"notes\": \"Routine monitoring\"\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Doctors",
+      "item": [
+        {
+          "name": "Get All Doctors",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/doctors",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }]
+          }
+        },
+        {
+          "name": "Get Doctors by Department",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/doctors?department=Cardiology",
+              "query": [{ "key": "department", "value": "Cardiology" }]
+            },
+            "header": [{ "key": "Authorization", "value": "Bearer {{patientToken}}" }]
+          }
+        },
+        {
+          "name": "Get My Doctor Profile",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/doctors/me/profile",
+            "header": [{ "key": "Authorization", "value": "Bearer {{doctorToken}}" }]
+          }
+        },
+        {
+          "name": "Get Doctor's Patients",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/doctors/REPLACE_WITH_DOCTOR_ID/patients",
+            "header": [{ "key": "Authorization", "value": "Bearer {{doctorToken}}" }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Prescriptions",
+      "item": [
+        {
+          "name": "Get My Prescriptions (Patient)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/prescriptions",
+            "header": [{ "key": "Authorization", "value": "Bearer {{patientToken}}" }]
+          }
+        },
+        {
+          "name": "Get My Prescriptions (Doctor)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/prescriptions",
+            "header": [{ "key": "Authorization", "value": "Bearer {{doctorToken}}" }]
+          }
+        },
+        {
+          "name": "Issue New Prescription",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/prescriptions",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{doctorToken}}" },
+              { "key": "Content-Type",  "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"patient_id\": \"REPLACE_WITH_PATIENT_ID\",\n  \"diagnosis\": \"Hypertension\",\n  \"instructions\": \"Low sodium diet. Monitor BP daily.\",\n  \"medications\": [\n    {\n      \"medicine_name\": \"Amlodipine\",\n      \"dosage\": \"5mg\",\n      \"frequency\": \"Once daily\",\n      \"duration\": \"30 days\",\n      \"instructions\": \"Take in the morning\"\n    }\n  ]\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Medical Records",
+      "item": [
+        {
+          "name": "Get Records (Doctor)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/records",
+            "header": [{ "key": "Authorization", "value": "Bearer {{doctorToken}}" }]
+          }
+        },
+        {
+          "name": "Get Records (Patient)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/records",
+            "header": [{ "key": "Authorization", "value": "Bearer {{patientToken}}" }]
+          }
+        },
+        {
+          "name": "Add Medical Record",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/records",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{doctorToken}}" },
+              { "key": "Content-Type",  "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"patient_id\": \"REPLACE_WITH_PATIENT_ID\",\n  \"record_date\": \"2026-04-01\",\n  \"diagnosis\": \"Hypertension — Controlled\",\n  \"symptoms\": \"Mild headache, BP 130/85\",\n  \"notes\": \"BP well-controlled on current regimen. Continue medications.\",\n  \"followup_date\": \"2026-05-01\"\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Lab Reports",
+      "item": [
+        {
+          "name": "Get Lab Reports (Patient)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/lab-reports",
+            "header": [{ "key": "Authorization", "value": "Bearer {{patientToken}}" }]
+          }
+        },
+        {
+          "name": "Add Lab Report",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/lab-reports",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{doctorToken}}" },
+              { "key": "Content-Type",  "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"patient_id\": \"REPLACE_WITH_PATIENT_ID\",\n  \"test_name\": \"HbA1c\",\n  \"test_date\": \"2026-04-01\",\n  \"result\": \"6.8% — Pre-diabetic range\",\n  \"status\": \"abnormal\",\n  \"lab_name\": \"Pathology Department\"\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Messages",
+      "item": [
+        {
+          "name": "Get Conversations",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/messages/conversations/list",
+            "header": [{ "key": "Authorization", "value": "Bearer {{patientToken}}" }]
+          }
+        },
+        {
+          "name": "Get Messages with a User",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/messages/REPLACE_WITH_OTHER_USER_ID",
+            "header": [{ "key": "Authorization", "value": "Bearer {{patientToken}}" }]
+          }
+        },
+        {
+          "name": "Send Message",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/messages",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{patientToken}}" },
+              { "key": "Content-Type",  "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"receiver_id\": \"REPLACE_WITH_DOCTOR_USER_ID\",\n  \"content\": \"Doctor, I have a question about my prescription.\"\n}" }
+          }
+        },
+        {
+          "name": "Get Unread Count",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/messages/unread/count",
+            "header": [{ "key": "Authorization", "value": "Bearer {{patientToken}}" }]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Billing",
+      "item": [
+        {
+          "name": "Get All Bills (Admin)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/bills",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }]
+          }
+        },
+        {
+          "name": "Create Bill",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/bills",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type",  "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"patient_id\": \"REPLACE_WITH_PATIENT_ID\",\n  \"amount\": 5000,\n  \"services\": \"OPD Consultation + Lab Tests\",\n  \"due_date\": \"2026-04-30\"\n}" }
+          }
+        },
+        {
+          "name": "Mark Bill as Paid",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/bills/REPLACE_WITH_BILL_ID",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type",  "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"status\": \"paid\"\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Inventory",
+      "item": [
+        {
+          "name": "Get All Inventory",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/inventory",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }]
+          }
+        },
+        {
+          "name": "Add Inventory Item",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/inventory",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type",  "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"item_name\": \"Amoxicillin 500mg\",\n  \"category\": \"Medicine\",\n  \"quantity\": 2000,\n  \"unit\": \"tablets\",\n  \"threshold\": 500,\n  \"supplier\": \"MedPharma Ltd\"\n}" }
+          }
+        },
+        {
+          "name": "Update Inventory Quantity",
+          "request": {
+            "method": "PUT",
+            "url": "{{baseUrl}}/inventory/REPLACE_WITH_ITEM_ID",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{adminToken}}" },
+              { "key": "Content-Type",  "value": "application/json" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"quantity\": 500,\n  \"threshold\": 100,\n  \"supplier\": \"MedPharma Ltd\"\n}" }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Departments",
+      "item": [
+        {
+          "name": "Get All Departments",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/departments",
+            "header": [{ "key": "Authorization", "value": "Bearer {{adminToken}}" }]
+          }
+        }
+      ]
+    }
+  ]
+}

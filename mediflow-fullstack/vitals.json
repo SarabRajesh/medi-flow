@@ -1,0 +1,68 @@
+{
+  "description": "MediFlow Sample Patient Vitals Records",
+  "normalRanges": {
+    "bp_systolic":   { "min": 90,   "max": 120,  "unit": "mmHg" },
+    "bp_diastolic":  { "min": 60,   "max": 80,   "unit": "mmHg" },
+    "heart_rate":    { "min": 60,   "max": 100,  "unit": "bpm"  },
+    "temperature":   { "min": 36.1, "max": 37.2, "unit": "°C"   },
+    "spo2":          { "min": 95,   "max": 100,  "unit": "%"    },
+    "weight_kg":     { "min": null, "max": null,  "unit": "kg"   }
+  },
+  "vitals": [
+    {
+      "patient_email": "rajesh@gmail.com",
+      "recorded_at": "2026-03-30 09:00",
+      "bp_systolic": 160,
+      "bp_diastolic": 100,
+      "heart_rate": 98,
+      "temperature": 36.8,
+      "spo2": 94,
+      "weight_kg": 82,
+      "notes": "Acute exacerbation — ICU admission"
+    },
+    {
+      "patient_email": "rajesh@gmail.com",
+      "recorded_at": "2026-03-28 10:00",
+      "bp_systolic": 148,
+      "bp_diastolic": 92,
+      "heart_rate": 92,
+      "temperature": 37.0,
+      "spo2": 96,
+      "weight_kg": 82,
+      "notes": "Follow-up monitoring"
+    },
+    {
+      "patient_email": "rajesh@gmail.com",
+      "recorded_at": "2026-03-15 09:30",
+      "bp_systolic": 138,
+      "bp_diastolic": 85,
+      "heart_rate": 84,
+      "temperature": 36.7,
+      "spo2": 97,
+      "weight_kg": 81,
+      "notes": "Improving on medications"
+    },
+    {
+      "patient_email": "rajesh@gmail.com",
+      "recorded_at": "2026-02-28 10:00",
+      "bp_systolic": 152,
+      "bp_diastolic": 96,
+      "heart_rate": 88,
+      "temperature": 36.9,
+      "spo2": 95,
+      "weight_kg": 83,
+      "notes": "Initial visit — baseline vitals"
+    },
+    {
+      "patient_email": "anita@gmail.com",
+      "recorded_at": "2026-03-30 10:30",
+      "bp_systolic": 110,
+      "bp_diastolic": 70,
+      "heart_rate": 82,
+      "temperature": 36.6,
+      "spo2": 99,
+      "weight_kg": 66,
+      "notes": "Antenatal visit — 28 weeks"
+    }
+  ]
+}

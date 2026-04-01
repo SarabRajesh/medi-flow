@@ -1,0 +1,89 @@
+{
+  "description": "MediFlow API — Complete Route Reference",
+  "baseUrl": "http://localhost:3000/api",
+  "authentication": {
+    "type": "Bearer Token (JWT)",
+    "header": "Authorization: Bearer <token>",
+    "obtain": "POST /api/auth/login",
+    "expiry": "12 hours"
+  },
+  "routes": {
+    "auth": {
+      "POST /auth/login":    { "access": "public",               "body": ["email","password"],        "returns": "token + user + profile" },
+      "POST /auth/register": { "access": "public",               "body": ["name","email","password","role","phone","..."], "returns": "token + user" },
+      "GET  /auth/me":       { "access": "authenticated",        "returns": "user + profile" },
+      "PUT  /auth/profile":  { "access": "authenticated",        "body": ["name","phone","...role fields"], "returns": "success message" }
+    },
+    "dashboard": {
+      "GET /dashboard/admin":   { "access": "admin",   "returns": "stats, weekly_counts, departments, recent_appointments" },
+      "GET /dashboard/doctor":  { "access": "doctor",  "returns": "stats, today_schedule, unread_messages" },
+      "GET /dashboard/patient": { "access": "patient", "returns": "profile, latest_vitals, upcoming_appointments, active_prescriptions" }
+    },
+    "appointments": {
+      "GET  /appointments":                     { "access": "all (role-filtered)", "query": ["date","status","doctor_id","patient_id"] },
+      "GET  /appointments/today":               { "access": "admin, doctor" },
+      "GET  /appointments/:id":                 { "access": "authenticated" },
+      "POST /appointments":                     { "access": "authenticated", "body": ["doctor_id","appointment_date","appointment_time","type","chief_complaint"] },
+      "PUT  /appointments/:id":                 { "access": "authenticated", "body": ["status","notes","type"] },
+      "GET  /appointments/slots/:doctorId/:date": { "access": "authenticated", "returns": "array of {time, available}" }
+    },
+    "patients": {
+      "GET  /patients":                    { "access": "admin, doctor", "query": ["search"] },
+      "GET  /patients/:id":                { "access": "admin, doctor" },
+      "GET  /patients/me/profile":         { "access": "patient" },
+      "GET  /patients/:id/vitals":         { "access": "admin, doctor" },
+      "POST /patients/:id/vitals":         { "access": "authenticated", "body": ["bp_systolic","bp_diastolic","heart_rate","temperature","spo2","weight_kg","notes"] }
+    },
+    "doctors": {
+      "GET /doctors":               { "access": "authenticated", "query": ["department","status"] },
+      "GET /doctors/:id":           { "access": "authenticated" },
+      "GET /doctors/me/profile":    { "access": "doctor" },
+      "GET /doctors/:id/patients":  { "access": "doctor, admin" }
+    },
+    "records": {
+      "GET  /records": { "access": "all (role-filtered)", "query": ["patient_id"] },
+      "POST /records": { "access": "doctor, admin", "body": ["patient_id","record_date","diagnosis","symptoms","notes","followup_date"] }
+    },
+    "prescriptions": {
+      "GET  /prescriptions": { "access": "all (role-filtered)" },
+      "POST /prescriptions": { "access": "doctor, admin", "body": ["patient_id","diagnosis","instructions","medications[]"] }
+    },
+    "lab-reports": {
+      "GET  /lab-reports": { "access": "all (role-filtered)", "query": ["patient_id"] },
+      "POST /lab-reports": { "access": "doctor, admin", "body": ["patient_id","test_name","test_date","result","status","lab_name"] }
+    },
+    "messages": {
+      "GET  /messages/conversations/list": { "access": "authenticated" },
+      "GET  /messages/unread/count":       { "access": "authenticated" },
+      "GET  /messages/:otherId":           { "access": "authenticated", "note": "also marks messages as read" },
+      "POST /messages":                    { "access": "authenticated", "body": ["receiver_id","content"] }
+    },
+    "billing": {
+      "GET  /bills":      { "access": "admin, doctor" },
+      "GET  /bills/mine": { "access": "patient" },
+      "POST /bills":      { "access": "admin", "body": ["patient_id","amount","services","due_date"] },
+      "PUT  /bills/:id":  { "access": "admin", "body": ["status"] }
+    },
+    "inventory": {
+      "GET  /inventory":      { "access": "admin" },
+      "POST /inventory":      { "access": "admin", "body": ["item_name","category","quantity","unit","threshold","supplier"] },
+      "PUT  /inventory/:id":  { "access": "admin", "body": ["quantity","threshold","supplier"] }
+    },
+    "departments": {
+      "GET /departments": { "access": "authenticated" }
+    }
+  },
+  "roles": {
+    "admin":   { "access": "all endpoints", "color": "#7c3aed" },
+    "doctor":  { "access": "clinical endpoints (own patients)", "color": "#0066ff" },
+    "patient": { "access": "own data only", "color": "#00c5a3" }
+  },
+  "errors": {
+    "400": "Bad Request — missing or invalid fields",
+    "401": "Unauthorized — no or invalid token",
+    "403": "Forbidden — insufficient role permissions",
+    "404": "Not Found",
+    "409": "Conflict — e.g. duplicate email or booked slot",
+    "500": "Internal Server Error"
+  }
+}

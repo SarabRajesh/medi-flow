@@ -1,0 +1,39 @@
+{
+  "app": {
+    "name": "MediFlow",
+    "version": "1.0.0",
+    "description": "Smart Hospital Management System",
+    "port": 3000,
+    "baseUrl": "http://localhost:3000"
+  },
+  "jwt": {
+    "secret": "mediflow_super_secret_2026",
+    "expiresIn": "12h"
+  },
+  "database": {
+    "path": "./db/mediflow.db",
+    "pragma": {
+      "journal_mode": "WAL",
+      "foreign_keys": true
+    }
+  },
+  "appointment": {
+    "slotDurationMinutes": 30,
+    "maxPerDoctorPerDay": 20,
+    "slots": [
+      "09:00","09:30","10:00","10:30","11:00","11:30",
+      "14:00","14:30","15:00","15:30","16:00","16:30"
+    ]
+  },
+  "notifications": {
+    "smsEnabled": false,
+    "emailEnabled": false
+  },
+  "hospital": {
+    "name": "MediFlow Central Hospital",
+    "registrationNo": "MH-HOS-2018-0042",
+    "emergencyContact": "+91 044-28001234",
+    "address": "1, Hospital Road, Chennai, Tamil Nadu 600001",
+    "email": "info@mediflow.com"
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "description": "MediFlow Sample Prescriptions Data",
+  "prescriptions": [
+    {
+      "patient_email": "rajesh@gmail.com",
+      "doctor_email": "priya@mediflow.com",
+      "issue_date": "2026-03-30",
+      "diagnosis": "Hypertensive Heart Failure",
+      "status": "active",
+      "instructions": "Low sodium diet. Restrict fluids to 1.5L/day. Monitor BP daily. Return if BP > 160/100 or breathlessness worsens.",
+      "medications": [
+        {
+          "medicine_name": "Lisinopril",
+          "dosage": "10mg",
+          "frequency": "Once daily",
+          "duration": "30 days",
+          "instructions": "Take in the morning"
+        },
+        {
+          "medicine_name": "Atenolol",
+          "dosage": "25mg",
+          "frequency": "Once daily",
+          "duration": "30 days",
+          "instructions": "Take at night"
+        },
+        {
+          "medicine_name": "Furosemide",
+          "dosage": "40mg",
+          "frequency": "Once daily",
+          "duration": "14 days",
+          "instructions": "Take in the morning with food"
+        },
+        {
+          "medicine_name": "Aspirin",
+          "dosage": "75mg",
+          "frequency": "Once daily",
+          "duration": "30 days",
+          "instructions": "After food"
+        }
+      ]
+    },
+    {
+      "patient_email": "sita@gmail.com",
+      "doctor_email": "arjun@mediflow.com",
+      "issue_date": "2026-03-20",
+      "diagnosis": "Chronic Migraine",
+      "status": "active",
+      "instructions": "Avoid known migraine triggers. Rest in a dark, quiet room during attacks. Keep a migraine diary.",
+      "medications": [
+        {
+          "medicine_name": "Sumatriptan",
+          "dosage": "50mg",
+          "frequency": "As needed at onset",
+          "duration": "10 tablets",
+          "instructions": "Take at first sign of migraine"
+        },
+        {
+          "medicine_name": "Propranolol",
+          "dosage": "40mg",
+          "frequency": "Twice daily",
+          "duration": "30 days",
+          "instructions": "Prophylactic — take with food"
+        }
+      ]
+    }
+  ]
+}

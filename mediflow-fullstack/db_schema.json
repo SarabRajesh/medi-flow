@@ -1,0 +1,184 @@
+{
+  "description": "MediFlow SQLite Database Schema Reference",
+  "database": "mediflow.db",
+  "tables": {
+    "users": {
+      "description": "All users — admin, doctor, patient",
+      "columns": {
+        "id":               { "type": "TEXT", "constraints": "PRIMARY KEY" },
+        "name":             { "type": "TEXT", "constraints": "NOT NULL" },
+        "email":            { "type": "TEXT", "constraints": "UNIQUE NOT NULL" },
+        "password":         { "type": "TEXT", "constraints": "NOT NULL (bcrypt hashed)" },
+        "role":             { "type": "TEXT", "constraints": "CHECK(admin|doctor|patient)" },
+        "phone":            { "type": "TEXT" },
+        "avatar_initials":  { "type": "TEXT" },
+        "created_at":       { "type": "DATETIME", "default": "CURRENT_TIMESTAMP" },
+        "updated_at":       { "type": "DATETIME", "default": "CURRENT_TIMESTAMP" }
+      }
+    },
+    "doctors": {
+      "description": "Extended profile for doctor users",
+      "columns": {
+        "id":               { "type": "TEXT", "constraints": "PRIMARY KEY" },
+        "user_id":          { "type": "TEXT", "constraints": "UNIQUE FK→users.id" },
+        "specialization":   { "type": "TEXT" },
+        "department":       { "type": "TEXT" },
+        "qualification":    { "type": "TEXT" },
+        "experience_years": { "type": "INTEGER" },
+        "room":             { "type": "TEXT" },
+        "status":           { "type": "TEXT", "constraints": "CHECK(active|on_leave|inactive)" }
+      }
+    },
+    "patients": {
+      "description": "Extended profile for patient users",
+      "columns": {
+        "id":                       { "type": "TEXT", "constraints": "PRIMARY KEY" },
+        "user_id":                  { "type": "TEXT", "constraints": "UNIQUE FK→users.id" },
+        "dob":                      { "type": "TEXT", "format": "YYYY-MM-DD" },
+        "gender":                   { "type": "TEXT", "constraints": "CHECK(male|female|other)" },
+        "blood_group":              { "type": "TEXT" },
+        "height_cm":                { "type": "REAL" },
+        "weight_kg":                { "type": "REAL" },
+        "allergies":                { "type": "TEXT" },
+        "chronic_conditions":       { "type": "TEXT" },
+        "emergency_contact_name":   { "type": "TEXT" },
+        "emergency_contact_phone":  { "type": "TEXT" },
+        "address":                  { "type": "TEXT" }
+      }
+    },
+    "departments": {
+      "columns": {
+        "id":             { "type": "TEXT", "constraints": "PRIMARY KEY" },
+        "name":           { "type": "TEXT", "constraints": "UNIQUE NOT NULL" },
+        "icon":           { "type": "TEXT" },
+        "head_doctor_id": { "type": "TEXT" },
+        "total_beds":     { "type": "INTEGER" },
+        "occupied_beds":  { "type": "INTEGER" }
+      }
+    },
+    "appointments": {
+      "columns": {
+        "id":               { "type": "TEXT", "constraints": "PRIMARY KEY" },
+        "patient_id":       { "type": "TEXT", "constraints": "FK→patients.id" },
+        "doctor_id":        { "type": "TEXT", "constraints": "FK→doctors.id" },
+        "appointment_date": { "type": "TEXT", "format": "YYYY-MM-DD" },
+        "appointment_time": { "type": "TEXT", "format": "HH:MM" },
+        "type":             { "type": "TEXT", "constraints": "CHECK(consultation|follow-up|emergency|post-op|check-up)" },
+        "status":           { "type": "TEXT", "constraints": "CHECK(scheduled|waiting|in-progress|completed|cancelled)" },
+        "chief_complaint":  { "type": "TEXT" },
+        "notes":            { "type": "TEXT" },
+        "room":             { "type": "TEXT" }
+      }
+    },
+    "medical_records": {
+      "columns": {
+        "id":             { "type": "TEXT", "constraints": "PRIMARY KEY" },
+        "patient_id":     { "type": "TEXT", "constraints": "FK→patients.id" },
+        "doctor_id":      { "type": "TEXT", "constraints": "FK→doctors.id" },
+        "appointment_id": { "type": "TEXT", "nullable": true },
+        "record_date":    { "type": "TEXT" },
+        "diagnosis":      { "type": "TEXT" },
+        "symptoms":       { "type": "TEXT" },
+        "notes":          { "type": "TEXT" },
+        "followup_date":  { "type": "TEXT" }
+      }
+    },
+    "prescriptions": {
+      "columns": {
+        "id":           { "type": "TEXT", "constraints": "PRIMARY KEY" },
+        "patient_id":   { "type": "TEXT", "constraints": "FK→patients.id" },
+        "doctor_id":    { "type": "TEXT", "constraints": "FK→doctors.id" },
+        "record_id":    { "type": "TEXT", "nullable": true },
+        "issue_date":   { "type": "TEXT" },
+        "diagnosis":    { "type": "TEXT" },
+        "instructions": { "type": "TEXT" },
+        "status":       { "type": "TEXT", "constraints": "CHECK(active|completed|cancelled)" }
+      }
+    },
+    "prescription_medications": {
+      "description": "Individual medications within a prescription",
+      "columns": {
+        "id":              { "type": "TEXT", "constraints": "PRIMARY KEY" },
+        "prescription_id": { "type": "TEXT", "constraints": "FK→prescriptions.id CASCADE DELETE" },
+        "medicine_name":   { "type": "TEXT" },
+        "dosage":          { "type": "TEXT" },
+        "frequency":       { "type": "TEXT" },
+        "duration":        { "type": "TEXT" },
+        "instructions":    { "type": "TEXT" }
+      }
+    },
+    "lab_reports": {
+      "columns": {
+        "id":          { "type": "TEXT", "constraints": "PRIMARY KEY" },
+        "patient_id":  { "type": "TEXT", "constraints": "FK→patients.id" },
+        "doctor_id":   { "type": "TEXT", "nullable": true },
+        "test_name":   { "type": "TEXT" },
+        "test_date":   { "type": "TEXT" },
+        "result":      { "type": "TEXT" },
+        "status":      { "type": "TEXT", "constraints": "CHECK(pending|normal|abnormal|critical)" },
+        "lab_name":    { "type": "TEXT" },
+        "uploaded_by": { "type": "TEXT" }
+      }
+    },
+    "messages": {
+      "columns": {
+        "id":          { "type": "TEXT", "constraints": "PRIMARY KEY" },
+        "sender_id":   { "type": "TEXT", "constraints": "FK→users.id" },
+        "receiver_id": { "type": "TEXT", "constraints": "FK→users.id" },
+        "content":     { "type": "TEXT" },
+        "is_read":     { "type": "INTEGER", "default": 0 },
+        "sent_at":     { "type": "DATETIME", "default": "CURRENT_TIMESTAMP" }
+      }
+    },
+    "vitals": {
+      "columns": {
+        "id":            { "type": "TEXT", "constraints": "PRIMARY KEY" },
+        "patient_id":    { "type": "TEXT", "constraints": "FK→patients.id" },
+        "recorded_by":   { "type": "TEXT" },
+        "recorded_at":   { "type": "DATETIME" },
+        "bp_systolic":   { "type": "INTEGER", "unit": "mmHg" },
+        "bp_diastolic":  { "type": "INTEGER", "unit": "mmHg" },
+        "heart_rate":    { "type": "INTEGER", "unit": "bpm" },
+        "temperature":   { "type": "REAL",    "unit": "°C" },
+        "spo2":          { "type": "INTEGER", "unit": "%" },
+        "weight_kg":     { "type": "REAL",    "unit": "kg" },
+        "notes":         { "type": "TEXT" }
+      }
+    },
+    "inventory": {
+      "columns": {
+        "id":             { "type": "TEXT", "constraints": "PRIMARY KEY" },
+        "item_name":      { "type": "TEXT" },
+        "category":       { "type": "TEXT" },
+        "quantity":       { "type": "INTEGER" },
+        "unit":           { "type": "TEXT" },
+        "threshold":      { "type": "INTEGER", "note": "alert when quantity <= threshold" },
+        "supplier":       { "type": "TEXT" },
+        "last_restocked": { "type": "DATETIME" }
+      }
+    },
+    "bills": {
+      "columns": {
+        "id":             { "type": "TEXT", "constraints": "PRIMARY KEY" },
+        "patient_id":     { "type": "TEXT", "constraints": "FK→patients.id" },
+        "appointment_id": { "type": "TEXT", "nullable": true },
+        "amount":         { "type": "REAL" },
+        "services":       { "type": "TEXT" },
+        "status":         { "type": "TEXT", "constraints": "CHECK(pending|paid|overdue|cancelled)" },
+        "due_date":       { "type": "TEXT" },
+        "paid_at":        { "type": "DATETIME", "nullable": true }
+      }
+    },
+    "medication_logs": {
+      "description": "Patient self-tracking of medication adherence",
+      "columns": {
+        "id":                        { "type": "TEXT", "constraints": "PRIMARY KEY" },
+        "prescription_medication_id":{ "type": "TEXT" },
+        "patient_id":                { "type": "TEXT", "constraints": "FK→patients.id" },
+        "taken_at":                  { "type": "DATETIME", "nullable": true },
+        "scheduled_date":            { "type": "TEXT" },
+        "status":                    { "type": "TEXT", "constraints": "CHECK(taken|missed|pending)" }
+      }
+    }
+  }
+}

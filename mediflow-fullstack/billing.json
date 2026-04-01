@@ -1,0 +1,54 @@
+{
+  "description": "MediFlow Sample Billing & Invoice Data",
+  "billStatuses": ["pending", "paid", "overdue", "cancelled"],
+  "bills": [
+    {
+      "patient_email": "rajesh@gmail.com",
+      "amount": 18500,
+      "services": "Cardiology Consultation + ICU Charges + Diagnostics (ECG, CBC, KFT)",
+      "status": "paid",
+      "due_date": "2026-04-05",
+      "notes": "Paid via UPI"
+    },
+    {
+      "patient_email": "anita@gmail.com",
+      "amount": 8200,
+      "services": "OPD Gynecology Consultation + Lab Tests (Blood Work, USG Abdomen)",
+      "status": "pending",
+      "due_date": "2026-04-10",
+      "notes": "Insurance claim submitted"
+    },
+    {
+      "patient_email": "vikram@gmail.com",
+      "amount": 45000,
+      "services": "Total Knee Replacement Surgery (Left) + Anesthesia + Post-Op Care + Physiotherapy",
+      "status": "paid",
+      "due_date": "2026-04-01",
+      "notes": "Paid via NEFT"
+    },
+    {
+      "patient_email": "sita@gmail.com",
+      "amount": 12800,
+      "services": "Neurology Consultation + MRI Brain + Medication",
+      "status": "overdue",
+      "due_date": "2026-03-28",
+      "notes": "Reminder sent 3 times"
+    }
+  ],
+  "serviceRates": {
+    "OPD Consultation": 500,
+    "Specialist Consultation": 1500,
+    "ECG 12-Lead": 800,
+    "Echo 2D": 3500,
+    "CBC Blood Test": 600,
+    "Kidney Function Test": 900,
+    "MRI Brain": 8000,
+    "X-Ray (per view)": 400,
+    "ICU Charges (per day)": 5000,
+    "Room Charges - General (per day)": 1200,
+    "Room Charges - Private (per day)": 3500,
+    "Anesthesia (per procedure)": 8000,
+    "Total Knee Replacement": 35000,
+    "Physiotherapy (per session)": 500
+  }
+}

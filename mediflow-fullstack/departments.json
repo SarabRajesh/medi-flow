@@ -1,0 +1,59 @@
+{
+  "description": "MediFlow Hospital Departments",
+  "departments": [
+    {
+      "name": "Cardiology",
+      "icon": "❤️",
+      "total_beds": 20,
+      "occupied_beds": 18,
+      "color": "#ff5c5c",
+      "doctors": ["Dr. Priya Nair"],
+      "services": ["ECG", "Echo 2D", "Holter Monitoring", "Stress Test", "Cardiac Cath", "Angioplasty"]
+    },
+    {
+      "name": "Neurology",
+      "icon": "🧠",
+      "total_beds": 15,
+      "occupied_beds": 9,
+      "color": "#0066ff",
+      "doctors": ["Dr. Arjun Sharma"],
+      "services": ["EEG", "MRI Brain", "Nerve Conduction Study", "Lumbar Puncture", "Botox Therapy"]
+    },
+    {
+      "name": "Orthopedics",
+      "icon": "🦴",
+      "total_beds": 18,
+      "occupied_beds": 14,
+      "color": "#00c5a3",
+      "doctors": ["Dr. Kavitha Rao"],
+      "services": ["Joint Replacement", "Arthroscopy", "Fracture Management", "Spine Surgery", "Physiotherapy"]
+    },
+    {
+      "name": "Gynecology",
+      "icon": "👶",
+      "total_beds": 12,
+      "occupied_beds": 8,
+      "color": "#ec4899",
+      "doctors": ["Dr. Suresh Iyer"],
+      "services": ["Antenatal Care", "Delivery", "Laparoscopy", "Hysterectomy", "Fertility Treatment"]
+    },
+    {
+      "name": "Pediatrics",
+      "icon": "🍼",
+      "total_beds": 10,
+      "occupied_beds": 4,
+      "color": "#f59e0b",
+      "doctors": ["Dr. Meena Pillai"],
+      "services": ["Neonatal Care", "Vaccination", "Growth Monitoring", "Pediatric Surgery"]
+    },
+    {
+      "name": "General Medicine",
+      "icon": "🔬",
+      "total_beds": 25,
+      "occupied_beds": 21,
+      "color": "#7c3aed",
+      "doctors": ["Dr. Ravi Kumar", "Dr. Shalini Das"],
+      "services": ["OPD Consultation", "Diabetes Management", "Hypertension", "Infectious Diseases", "Geriatric Care"]
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+{
+  "description": "MediFlow Sample Medical Records / Clinical Notes",
+  "records": [
+    {
+      "patient_email": "rajesh@gmail.com",
+      "doctor_email": "priya@mediflow.com",
+      "record_date": "2026-03-30",
+      "diagnosis": "Hypertensive Heart Failure Stage II — Acute Exacerbation",
+      "symptoms": "Chest pain, severe breathlessness, dizziness, BP 160/100, SpO2 94%",
+      "notes": "Patient admitted to ICU. Oxygen support started. Furosemide 40mg IV given. Lisinopril dose increased from 5mg to 10mg. Echo shows EF 48%. Cardiology team review done. Monitoring 6-hourly vitals.",
+      "followup_date": "2026-04-06"
+    },
+    {
+      "patient_email": "rajesh@gmail.com",
+      "doctor_email": "priya@mediflow.com",
+      "record_date": "2026-03-15",
+      "diagnosis": "Hypertensive Heart Failure — Improving",
+      "symptoms": "Mild breathlessness on exertion, BP 138/85, slight ankle edema",
+      "notes": "Patient improving on current medications. Continue Lisinopril 5mg + Atenolol 25mg. Low-sodium diet counselling given. Daily BP monitoring advised. Return if BP > 150/95.",
+      "followup_date": "2026-03-30"
+    },
+    {
+      "patient_email": "rajesh@gmail.com",
+      "doctor_email": "priya@mediflow.com",
+      "record_date": "2026-02-28",
+      "diagnosis": "Hypertensive Heart Failure — Initial Presentation",
+      "symptoms": "Chest pain, breathlessness on exertion, ankle swelling, BP 150/95, HR 92 bpm",
+      "notes": "New diagnosis of Hypertensive Heart Failure. Started Lisinopril 5mg + Atenolol 25mg. Ordered Echo 2D, Holter monitoring, KFT, CBC. Patient counselled regarding diet and lifestyle. Follow-up in 2 weeks.",
+      "followup_date": "2026-03-15"
+    },
+    {
+      "patient_email": "vikram@gmail.com",
+      "doctor_email": "kavitha@mediflow.com",
+      "record_date": "2026-03-20",
+      "diagnosis": "Post Total Knee Replacement — Recovery Phase",
+      "symptoms": "Mild swelling around surgical site, controlled pain (3/10), improving mobility",
+      "notes": "Post-op day 14. Wound healing well, no signs of infection. Physiotherapy progressing — patient can walk with support. Continue physiotherapy 5x/week. Pain managed with Tab. Tramadol 50mg SOS. Review X-Ray knee in 2 weeks.",
+      "followup_date": "2026-04-02"
+    }
+  ]
+}

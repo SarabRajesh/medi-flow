@@ -1,0 +1,174 @@
+{
+  "description": "MediFlow Demo Login Credentials",
+  "note": "Passwords are plain-text here for reference. They are bcrypt-hashed in the database.",
+  "users": [
+    {
+      "role": "admin",
+      "name": "Admin Sharma",
+      "email": "admin@mediflow.com",
+      "password": "admin123",
+      "phone": "+91 044-2800-1234",
+      "avatar_initials": "AS"
+    },
+    {
+      "role": "doctor",
+      "name": "Dr. Priya Nair",
+      "email": "priya@mediflow.com",
+      "password": "doctor123",
+      "phone": "+91 98765-00001",
+      "avatar_initials": "PN",
+      "profile": {
+        "specialization": "Cardiologist",
+        "department": "Cardiology",
+        "qualification": "MBBS, MD Cardiology",
+        "experience_years": 14,
+        "room": "Room 204",
+        "status": "active"
+      }
+    },
+    {
+      "role": "doctor",
+      "name": "Dr. Arjun Sharma",
+      "email": "arjun@mediflow.com",
+      "password": "doctor123",
+      "phone": "+91 98765-00002",
+      "avatar_initials": "AS",
+      "profile": {
+        "specialization": "Neurologist",
+        "department": "Neurology",
+        "qualification": "MBBS, DM Neurology",
+        "experience_years": 12,
+        "room": "Room 301",
+        "status": "active"
+      }
+    },
+    {
+      "role": "doctor",
+      "name": "Dr. Kavitha Rao",
+      "email": "kavitha@mediflow.com",
+      "password": "doctor123",
+      "phone": "+91 98765-00003",
+      "avatar_initials": "KR",
+      "profile": {
+        "specialization": "Orthopedician",
+        "department": "Orthopedics",
+        "qualification": "MBBS, MS Orthopedics",
+        "experience_years": 8,
+        "room": "Room 105",
+        "status": "on_leave"
+      }
+    },
+    {
+      "role": "doctor",
+      "name": "Dr. Suresh Iyer",
+      "email": "suresh@mediflow.com",
+      "password": "doctor123",
+      "phone": "+91 98765-00004",
+      "avatar_initials": "SI",
+      "profile": {
+        "specialization": "Gynecologist",
+        "department": "Gynecology",
+        "qualification": "MBBS, MS Gynecology",
+        "experience_years": 10,
+        "room": "Room 202",
+        "status": "active"
+      }
+    },
+    {
+      "role": "doctor",
+      "name": "Dr. Meena Pillai",
+      "email": "meena@mediflow.com",
+      "password": "doctor123",
+      "phone": "+91 98765-00005",
+      "avatar_initials": "MP",
+      "profile": {
+        "specialization": "Pediatrician",
+        "department": "Pediatrics",
+        "qualification": "MBBS, MD Pediatrics",
+        "experience_years": 7,
+        "room": "Room 402",
+        "status": "active"
+      }
+    },
+    {
+      "role": "patient",
+      "name": "Rajesh Kumar",
+      "email": "rajesh@gmail.com",
+      "password": "patient123",
+      "phone": "+91 98765-43210",
+      "avatar_initials": "RK",
+      "profile": {
+        "dob": "1972-06-12",
+        "gender": "male",
+        "blood_group": "B+",
+        "height_cm": 172,
+        "weight_kg": 82,
+        "allergies": "Penicillin",
+        "chronic_conditions": "Hypertension, Heart Failure",
+        "emergency_contact_name": "Sunita Kumar",
+        "emergency_contact_phone": "+91 98765-43211",
+        "address": "42, Nungambakkam High Road, Chennai 600034"
+      }
+    },
+    {
+      "role": "patient",
+      "name": "Anita Lal",
+      "email": "anita@gmail.com",
+      "password": "patient123",
+      "phone": "+91 98765-11111",
+      "avatar_initials": "AL",
+      "profile": {
+        "dob": "1992-03-22",
+        "gender": "female",
+        "blood_group": "A+",
+        "height_cm": 160,
+        "weight_kg": 55,
+        "allergies": "None",
+        "chronic_conditions": "None",
+        "emergency_contact_name": "Ravi Lal",
+        "emergency_contact_phone": "+91 98765-22222",
+        "address": "18, Anna Nagar, Chennai 600040"
+      }
+    },
+    {
+      "role": "patient",
+      "name": "Vikram Mehta",
+      "email": "vikram@gmail.com",
+      "password": "patient123",
+      "phone": "+91 91234-56789",
+      "avatar_initials": "VM",
+      "profile": {
+        "dob": "1958-11-05",
+        "gender": "male",
+        "blood_group": "O-",
+        "height_cm": 175,
+        "weight_kg": 90,
+        "allergies": "Sulfa drugs",
+        "chronic_conditions": "Osteoarthritis",
+        "emergency_contact_name": "Meera Mehta",
+        "emergency_contact_phone": "+91 91234-56780",
+        "address": "7, Adyar, Chennai 600020"
+      }
+    },
+    {
+      "role": "patient",
+      "name": "Sita Patel",
+      "email": "sita@gmail.com",
+      "password": "patient123",
+      "phone": "+91 87654-32109",
+      "avatar_initials": "SP",
+      "profile": {
+        "dob": "1998-07-14",
+        "gender": "female",
+        "blood_group": "AB+",
+        "height_cm": 158,
+        "weight_kg": 52,
+        "allergies": "None",
+        "chronic_conditions": "Migraine",
+        "emergency_contact_name": "Suresh Patel",
+        "emergency_contact_phone": "+91 87654-32100",
+        "address": "9, T. Nagar, Chennai 600017"
+      }
+    }
+  ]
+}
